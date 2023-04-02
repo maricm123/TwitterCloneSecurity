@@ -35,3 +35,8 @@ Mora da prati sve ovo :
 SUPER USER
 mihailomaric001@gmail.com
 mihailo
+
+
+
+26.03 - nastaviti i usavrsiti login kod obe role.
+Stao si kod BussinesUserLoginView
