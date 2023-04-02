@@ -17,6 +17,7 @@ class CustomUserManager(BaseUserManager):
         user.set_password(
             password
         )
+        
 
         user.save()
 

@@ -7,20 +7,12 @@ from profiles.models.default_user import DefaultUser
 
 User = get_user_model()
 
+
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     """
     Overrides the default TokenObtainPairSerializer to return the user_type in the token response.
     """
-    # @classmethod
-    # def get_token(self, user):
-    #     token = super().get_token(user)
 
-    #     # Add custom claims
-    #     token['role'] = user.user_type
-    #     # ...
-    #     print(token)
-
-    #     return token
     def validate(self, attrs):
         data = super().validate(attrs)
         refresh = self.get_token(self.user)
@@ -29,6 +21,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         data['refresh'] = str(refresh)
         data['access'] = str(access)
         return data
+
 
 class UserSerializer(serializers.ModelSerializer):
     """
@@ -40,10 +33,11 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'username', 'password', 'email', 'user_type',)
         read_only_fields = ('id', 'user_type',)
-    
+
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         return user
+
 
 class DefaultUserSerializer(serializers.ModelSerializer):
     """
@@ -55,12 +49,14 @@ class DefaultUserSerializer(serializers.ModelSerializer):
         model = DefaultUser
         fields = ('id', 'user', 'first_name', 'last_name', 'age', 'address')
         read_only_fields = ('id',)
-    
+
     def create(self, validated_data):
         user_data = validated_data.pop('user')
-        user = User.objects.create_user(**user_data)
+        user_type = user_data.pop('user_type', 'default')
+        user = User.objects.create_user(**user_data, user_type=user_type)
         default_user = DefaultUser.objects.create(user=user, **validated_data)
         return default_user
+
 
 class BusinessUserSerializer(serializers.ModelSerializer):
     """
@@ -72,9 +68,11 @@ class BusinessUserSerializer(serializers.ModelSerializer):
         model = BusinessUser
         fields = ('id', 'user', 'company_name', 'website')
         read_only_fields = ('id',)
-    
+
     def create(self, validated_data):
         user_data = validated_data.pop('user')
-        user = User.objects.create_user(**user_data)
-        business_user = BusinessUser.objects.create(user=user, **validated_data)
+        user_type = user_data.pop('user_type', 'business')
+        user = User.objects.create_user(**user_data, user_type=user_type)
+        business_user = BusinessUser.objects.create(
+            user=user, **validated_data)
         return business_user
