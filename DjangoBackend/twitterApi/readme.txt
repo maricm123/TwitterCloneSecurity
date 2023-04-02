@@ -40,3 +40,7 @@ mihailo
 
 26.03 - nastaviti i usavrsiti login kod obe role.
 Stao si kod BussinesUserLoginView
+
+
+02.04 - napraviti jedan login i tu da se prepoznaje koji je type od usera i to ce se na frontu setovati u vuex
+i na osnovu toga ce se prikazivati odredjene stranice

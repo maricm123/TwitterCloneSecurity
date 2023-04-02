@@ -1,11 +1,23 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import BusinessSignUp from "../views/businessuser/BusinessSignUp.vue";
+import Login from "../views/Login.vue";
 
 const routes = [
   {
     path: "/",
     name: "home",
     component: HomeView,
+  },
+  {
+    path: "/business-sign-up",
+    name: "business-sign-up",
+    component: BusinessSignUp,
+  },
+  {
+    path: "/login",
+    name: "login",
+    component: Login,
   },
   {
     path: "/about",
