@@ -28,7 +28,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         data['user_type'] = self.user.user_type
         data['refresh'] = str(refresh)
         data['access'] = str(access)
-        print(data)
         return data
 
 class UserSerializer(serializers.ModelSerializer):
