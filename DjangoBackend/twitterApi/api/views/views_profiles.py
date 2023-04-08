@@ -26,8 +26,7 @@ class BusinessUserRegisterView(generics.CreateAPIView):
     serializer_class = BusinessUserSerializer
 
 
-
-class BusinessUserLoginView(TokenObtainPairView, JWTAuthentication):
+class UserLoginView(TokenObtainPairView, JWTAuthentication):
     """
     View to handle login of Business Users.
     """

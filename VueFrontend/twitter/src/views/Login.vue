@@ -59,7 +59,7 @@ export default {
       };
 
       await axios
-        .post("/backend/api_coafro/coachlogin/", formData)
+        .post("/api/user/login/", formData)
         .then(response => {
           const token = response.data.tokens.access;
           const is_coach = response.data.is_coach.is_coach;

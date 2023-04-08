@@ -43,4 +43,11 @@ Stao si kod BussinesUserLoginView
 
 
 02.04 - napraviti jedan login i tu da se prepoznaje koji je type od usera i to ce se na frontu setovati u vuex
-i na osnovu toga ce se prikazivati odredjene stranice
+i na osnovu toga ce se prikazivati odredjene stranice - uradjeno
+
+
+08.04 - napraviti na frontu da radi sve sto se tice logina i sign up-a 
+
+
+- dalje istraziti sta da se radi za: 
+      Omogućiti mehanizme za potvrdu naloga, oporavak lozinke i promenu lozinke

@@ -17,8 +17,11 @@
         <div class="navbar-item">
           <div class="buttons">
             <template v-if="!$store.state.isAuthenticated">
-              <router-link to="/business-sign-up" class="button is-success">
+              <router-link to="/default-sign-up" class="button is-success">
                 <strong>Sign up</strong>
+              </router-link>
+              <router-link to="/business-sign-up" class="button is-success">
+                <strong>Business sign up</strong>
               </router-link>
               <router-link to="/login" class="button is-light">Log in</router-link>
             </template>

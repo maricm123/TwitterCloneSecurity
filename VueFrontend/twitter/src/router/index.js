@@ -1,6 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import BusinessSignUp from "../views/businessuser/BusinessSignUp.vue";
+import DefaultSignUp from "../views/defaultuser/DefaultSignUp.vue";
+import Dashboard from "../views/dashboard/Dashboard.vue";
+import UserProfile from "../views/dashboard/UserProfile.vue";
+
 import Login from "../views/Login.vue";
 
 const routes = [
@@ -15,9 +19,24 @@ const routes = [
     component: BusinessSignUp,
   },
   {
+    path: "/default-sign-up",
+    name: "default-sign-up",
+    component: DefaultSignUp,
+  },
+  {
     path: "/login",
     name: "login",
     component: Login,
+  },
+  {
+    path: "/dashboard",
+    name: "dashboard",
+    component: Dashboard,
+  },
+  {
+    path: "/dashboard/user-profile",
+    name: "user-profile",
+    component: UserProfile,
   },
   {
     path: "/about",
