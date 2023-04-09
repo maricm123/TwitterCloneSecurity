@@ -3,10 +3,12 @@ from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import PermissionsMixin, Permission
 
+
 class CustomUserManager(BaseUserManager):
     """
     Custom User Manager is required when redefining User class
     """
+
     def create_user(self,  email, password=None, **extra_fields):
         email = self.normalize_email(email)
 
@@ -17,14 +19,13 @@ class CustomUserManager(BaseUserManager):
         user.set_password(
             password
         )
-        
 
         user.save()
 
         return user
 
     def create_superuser(self,  email, password=None, **extra_fields):
-        
+
         user = self.create_user(email, password, **extra_fields)
         user.is_staff = True
         user.is_superuser = True
@@ -61,13 +62,14 @@ class User(
 
     is_staff = models.BooleanField(default=False, verbose_name=("staff"))
 
-    user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, null=True, blank=True)
+    user_type = models.CharField(
+        max_length=10, choices=USER_TYPE_CHOICES, null=True, blank=True)
 
-    
     objects = CustomUserManager()
 
     USERNAME_FIELD = "email"  # used as the unique identifier
-    REQUIRED_FIELDS = []  # a list of the field names that will be prompted with createsuperuser
+    # a list of the field names that will be prompted with createsuperuser
+    REQUIRED_FIELDS = []
 
     def __str__(self):
         return self.email

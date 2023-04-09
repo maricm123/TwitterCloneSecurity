@@ -25,23 +25,28 @@ export default {
   name: "UserProfile",
   methods: {
     async logout() {
+      const refresh = localStorage.getItem("refresh");
       await axios
-        .post("/api/v1/token/logout/")
+        .post(
+          "/api/logout/",
+          { refresh },
+          {
+            headers: { Authorization: `Bearer ${this.$store.state.token}` }
+          }
+        )
         .then(response => {
           console.log("Logged out");
         })
         .catch(error => {
           console.log(JSON.stringify(error));
         });
-
+      this.$store.commit("removeToken");
       axios.defaults.headers.common["Authorization"] = "";
       localStorage.removeItem("token");
-      localStorage.removeItem("username");
-      localStorage.removeItem("userid");
-      localStorage.removeItem("team_name");
-      localStorage.removeItem("team_id");
-      this.$store.commit("removeToken");
-      this.$router.push("/");
+      localStorage.removeItem("refresh");
+      localStorage.removeItem("role");
+
+      this.$router.push("/login");
     }
   }
 };

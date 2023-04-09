@@ -57,25 +57,30 @@ export default {
         email: this.email,
         password: this.password
       };
-
       await axios
         .post("/api/user/login/", formData)
         .then(response => {
-          const token = response.data.tokens.access;
-          const is_coach = response.data.is_coach.is_coach;
+          const token = response.data.token;
+          const refresh = response.data.refresh;
+          const role = response.data.user_type;
+
+          console.log(response, "RESPONSE DATA");
           this.$store.commit("setToken", token);
-          this.$store.commit("setCoach", is_coach);
+          this.$store.commit("setRefresh", refresh);
+          this.$store.commit("setRole", role);
 
           axios.defaults.headers.common["Authorization"] = "Token " + token;
 
           localStorage.setItem("token", token);
-          localStorage.setItem("is_coach", is_coach);
-          this.$router.push("/coach/my-account");
+          localStorage.setItem("refresh", refresh);
+          localStorage.setItem("role", role);
+          // localStorage.setItem("is_coach", is_coach);
+          this.$router.push("/dashboard");
         })
         .catch(error => {
           if (error.response) {
-            for (const message in response.data) {
-              this.errors.push(`${message}: ${response.data[message]}`);
+            for (const message in error.response.data) {
+              this.errors.push(`${message}: ${error.response.data[message]}`);
             }
           } else if (error.message) {
             this.errors.push("Something went wrong. Please try again!");

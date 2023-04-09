@@ -14,7 +14,7 @@
           <div class="field">
             <label>Password</label>
             <div class="control">
-              <input type="password" name="password1" class="input" v-model="password1" />
+              <input type="password" name="password" class="input" v-model="password" />
             </div>
           </div>
 
@@ -69,9 +69,9 @@ export default {
   data() {
     return {
       username: "",
-      password1: "",
-      password2: "",
+      password: "",
       email: "",
+      password2: "",
       companyName: "",
       website: "",
       errors: []
@@ -80,23 +80,27 @@ export default {
   methods: {
     async submitForm() {
       this.errors = [];
+
       if (this.username === "") {
         this.errors.push("The username is missing");
       }
-      if (this.password1 === "") {
+      if (this.password === "") {
         this.errors.push("The password is too short");
       }
-      if (this.password1 !== this.password2) {
+      if (this.password !== this.password2) {
         this.errors.push("The password are not matching");
       }
       if (!this.errors.length) {
         this.$store.commit("setIsLoading", true);
         const formData = {
+          email: this.email,
           username: this.username,
-          password: this.password1
+          password: this.password,
+          company_name: this.companyName,
+          website: this.website
         };
         await axios
-          .post("/api/v1/users/", formData)
+          .post("http://127.0.0.1:8000/api/business-user/register/", formData)
           .then(response => {
             toast({
               message: "Account was created, please log in",
@@ -106,7 +110,7 @@ export default {
               duration: 2000,
               position: "bottom-right"
             });
-            this.$router.push("/log-in");
+            this.$router.push("/login");
           })
           .catch(error => {
             if (error.response) {

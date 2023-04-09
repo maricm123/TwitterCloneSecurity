@@ -1,11 +1,15 @@
 
 from rest_framework import generics, status
-from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 from profiles.models import BusinessUser, DefaultUser, User
 from ..serializers.serializers_profiles import BusinessUserSerializer, CustomTokenObtainPairSerializer, DefaultUserSerializer, UserSerializer
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.response import Response
+from rest_framework import status
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -36,35 +40,50 @@ class UserLoginView(TokenObtainPairView, JWTAuthentication):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        print(request.data["email"], "EMAILLLLL")
-
-        print(serializer.validated_data)
-
         # Get the user_type from the request data
         user_type = serializer.validated_data['user_type']
 
         if user_type == 'business':
-            print(user_type)
+            # print(user_type)
             user = User.objects.get(email=request.data["email"])
             user_serializer = UserSerializer(user)
         elif user_type == 'default':
-            print(user_type)
+            # print(user_type)
             user = User.objects.get(email=request.data["email"])
             user_serializer = UserSerializer(user)
-        # else:
-        #     return Response({"error": "Invalid user_type"}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"error": "Invalid user_type"}, status=status.HTTP_400_BAD_REQUEST)
 
         token_data = serializer.validated_data.copy()
         del token_data['user_type']
 
         access_token = str(serializer.validated_data['access'])
+        refresh_token = str(serializer.validated_data['refresh'])
         response_data = {
             "token": access_token,
+            "refresh": refresh_token,
             # ovde vratiti business usera mozda
             #  ili jednostavno praviti novi view,  gde cu requestovati business usera
             "user": user_serializer.data,
             "user_type": user_type,
         }
-        print(response_data, "RESPONSE DATA")
+        # print(response_data, "RESPONSE DATA")
 
         return Response(response_data)
+
+# mozemo napraviti opciju za logout sa svih racunara
+
+
+class LogoutView(APIView):
+    # setovanje permisije na view (per-view permision)
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        try:
+            refresh_token = request.data["refresh"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+
+            return Response(status=status.HTTP_205_RESET_CONTENT)
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)

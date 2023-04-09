@@ -4,7 +4,8 @@ export default createStore({
   state: {
     isLoading: false,
     isAuthenticated: false,
-    token: ''
+    token: '',
+    refresh: ''
   },
   getters: {},
   // Mutations are functions in Vuex that modify the state of the store.
@@ -18,6 +19,25 @@ export default createStore({
         state.token = ''
         state.isAuthenticated = false
       }
+    },
+    setIsLoading(state, status) {
+      state.isLoading = status
+    },
+    setToken(state, token) {
+      state.token = token
+      state.isAuthenticated = true
+    },
+    // storovacemo posebno refresh da se ne salje svakim requestom
+    // sa access tokenom
+    setRefresh(state, refresh) {
+      state.refresh = refresh
+    },
+    setRole(state, role) {
+      state.role = role
+    },
+    removeToken(state) {
+      state.token = ''
+      state.isAuthenticated = false
     }
   },
   actions: {},

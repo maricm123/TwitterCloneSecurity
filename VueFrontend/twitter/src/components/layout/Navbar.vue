@@ -27,7 +27,7 @@
             </template>
 
             <template v-else>
-              <!-- <router-link to="/dashboard/my-account" class="button is-info">My account</router-link> -->
+              <router-link to="/dashboard/user-profile" class="button is-info">My account</router-link>
             </template>
           </div>
         </div>

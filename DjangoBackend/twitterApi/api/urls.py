@@ -18,4 +18,7 @@ urlpatterns = [
          name='default_user_register'),
     path('business-user/register/', views_profiles.BusinessUserRegisterView.as_view(),
          name='business_user_register'),
+
+    # logout
+    path('logout/', views_profiles.LogoutView.as_view(), name='logout'),
 ]

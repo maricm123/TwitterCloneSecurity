@@ -2,7 +2,7 @@
   <div class="container">
     <div class="columns">
       <div class="column is-4 is-offset-4">
-        <h1 class="title">Sign up user</h1>
+        <h1 class="title">Sign up default user</h1>
 
         <form @submit.prevent="submitForm">
           <div class="field">
@@ -14,7 +14,7 @@
           <div class="field">
             <label>Password</label>
             <div class="control">
-              <input type="password" name="password1" class="input" v-model="password1" />
+              <input type="password" name="password" class="input" v-model="password" />
             </div>
           </div>
 
@@ -33,16 +33,30 @@
           </div>
 
           <div class="field">
-            <label>Company name</label>
+            <label>First name</label>
             <div class="control">
-              <input type="text" name="companyName" class="input" v-model="companyName" />
+              <input type="text" name="first_name" class="input" v-model="first_name" />
             </div>
           </div>
 
           <div class="field">
-            <label>Website</label>
+            <label>Last name</label>
             <div class="control">
-              <input type="text" name="website" class="input" v-model="website" />
+              <input type="text" name="last_name" class="input" v-model="last_name" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Age</label>
+            <div class="control">
+              <input type="number" name="age" class="input" v-model="age" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Address</label>
+            <div class="control">
+              <input type="text" name="address" class="input" v-model="address" />
             </div>
           </div>
 
@@ -69,34 +83,42 @@ export default {
   data() {
     return {
       username: "",
-      password1: "",
-      password2: "",
+      password: "",
       email: "",
-      companyName: "",
-      website: "",
+      password2: "",
+      age: null,
+      address: "",
+      first_name: "",
+      last_name: "",
       errors: []
     };
   },
   methods: {
     async submitForm() {
       this.errors = [];
+
       if (this.username === "") {
         this.errors.push("The username is missing");
       }
-      if (this.password1 === "") {
+      if (this.password === "") {
         this.errors.push("The password is too short");
       }
-      if (this.password1 !== this.password2) {
+      if (this.password !== this.password2) {
         this.errors.push("The password are not matching");
       }
       if (!this.errors.length) {
         this.$store.commit("setIsLoading", true);
         const formData = {
+          email: this.email,
           username: this.username,
-          password: this.password1
+          password: this.password,
+          first_name: this.first_name,
+          last_name: this.last_name,
+          age: this.age,
+          address: this.address
         };
         await axios
-          .post("/api/v1/users/", formData)
+          .post("http://127.0.0.1:8000/api/default-user/register/", formData)
           .then(response => {
             toast({
               message: "Account was created, please log in",
@@ -106,7 +128,7 @@ export default {
               duration: 2000,
               position: "bottom-right"
             });
-            this.$router.push("/log-in");
+            this.$router.push("/login");
           })
           .catch(error => {
             if (error.response) {
