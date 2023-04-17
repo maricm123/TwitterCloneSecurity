@@ -87,3 +87,22 @@ class LogoutView(APIView):
             return Response(status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class MyProfileView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        # Retrieve the profile for the current user
+        try:
+            profile = request.user
+            print(profile)
+        except Profile.DoesNotExist:
+            return Response({'error': 'Profile not found'}, status=404)
+
+        return Response(profile)
+
+
+class UserProfileView(APIView):
+    pass
+

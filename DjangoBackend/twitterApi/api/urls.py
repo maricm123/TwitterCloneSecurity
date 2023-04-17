@@ -4,7 +4,8 @@ from rest_framework_simplejwt.views import (
 )
 from django.urls import include, path
 from .views import (
-    views_profiles
+    views_profiles,
+    views_tweets
 )
 app_name = "api"
 
@@ -21,4 +22,10 @@ urlpatterns = [
 
     # logout
     path('logout/', views_profiles.LogoutView.as_view(), name='logout'),
+    path('my-profile/', views_profiles.MyProfileView.as_view(), name='my-profile'),
+    path('user-profile/', views_profiles.UserProfileView.as_view(), name='my-profile'),
+
+    # tweets
+    path('create-tweet/', views_tweets.CreateTweetView.as_view(), name='create_tweet'),
+
 ]
