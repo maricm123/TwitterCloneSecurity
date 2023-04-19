@@ -12,3 +12,6 @@ class Tweet(models.Model):
         User, related_name='liked_tweets', blank=True)
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='tweets')
+
+    def __str__(self):
+        return self.user.username

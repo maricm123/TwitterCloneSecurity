@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar is-dark">
     <div class="navbar-brand">
-      <router-link to="/" class="navbar-item">
+      <router-link to="/dashboard" class="navbar-item">
         <strong>Twitter</strong>
       </router-link>
     </div>

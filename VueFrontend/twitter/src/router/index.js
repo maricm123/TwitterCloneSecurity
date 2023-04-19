@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
 import BusinessSignUp from "../views/businessuser/BusinessSignUp.vue";
 import DefaultSignUp from "../views/defaultuser/DefaultSignUp.vue";
 import Dashboard from "../views/dashboard/Dashboard.vue";
@@ -8,11 +7,11 @@ import store from "../store"
 import Login from "../views/Login.vue";
 
 const routes = [
-  {
-    path: "/",
-    name: "home",
-    component: HomeView,
-  },
+  // {
+  //   path: "/",
+  //   name: "home",
+  //   component: HomeView,
+  // },
   {
     path: "/business-sign-up",
     name: "business-sign-up",

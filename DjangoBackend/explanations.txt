@@ -59,3 +59,40 @@ it is recommended to store tokens in an HTTP-only cookie with the secure flag se
 This ensures that the tokens are only accessible via HTTP requests,
 and cannot be accessed by JavaScript running on the page.
 https://www.procoding.org/jwt-token-as-httponly-cookie-in-django/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Yes, you can override any of the methods in RetrieveUpdateDestroyAPIView if you need to customize the behavior of the view. Here are the methods that can be overridden and their respective HTTP methods:
+
+get() (HTTP GET): retrieves a single object.
+put() (HTTP PUT): updates a single object.
+patch() (HTTP PATCH): partially updates a single object.
+delete() (HTTP DELETE): deletes a single object.
+To override one or more of these methods, you can define a new method with the same name in your view subclass. For example, if you want to customize the delete() method in TweetDetail, you can define a new method like this:
+
+python
+Copy code
+class TweetDetail(generics.RetrieveUpdateDestroyAPIView):
+    # ... serializer_class, queryset, etc. ...
+
+    def delete(self, request, *args, **kwargs):
+        # Custom deletion logic goes here...
+        return self.destroy(request, *args, **kwargs)
+In this example, we've defined a new delete() method that overrides the default behavior of DestroyAPIView. We've included a comment indicating that custom deletion logic should be added here, and we've called the superclass's destroy() method at the end to perform the actual deletion of the object from the database.
+
+Similarly, you can override the get(), put(), or patch() methods if you need to customize the behavior of those HTTP methods for your view.
