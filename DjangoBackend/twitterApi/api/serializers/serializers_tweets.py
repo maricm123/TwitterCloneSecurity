@@ -5,7 +5,7 @@ from .serializers_profiles import UserSerializer
 
 class TweetSerializer(serializers.ModelSerializer):
     # user = serializers.ReadOnlyField(source='user.email')
-    user = UserSerializer()
+    user = UserSerializer(required=False)
 
     class Meta:
         model = Tweet

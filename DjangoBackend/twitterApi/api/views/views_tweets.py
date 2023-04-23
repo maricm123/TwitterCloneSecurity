@@ -20,6 +20,16 @@ class TweetList(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
 
+class TweetListByUser(generics.ListCreateAPIView):
+    # queryset = Tweet.objects.all()
+    serializer_class = TweetSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        print(self.request.user)
+        serializer.save(user=self.request.user)
+
+
 class TweetDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Tweet.objects.all()
     serializer_class = TweetSerializer

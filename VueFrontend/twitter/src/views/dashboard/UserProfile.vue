@@ -4,6 +4,11 @@
       <div class="column is-12">
         <h1 class="title">User Profile</h1>
       </div>
+      <div class="column is full">
+        <button class="button is-light">
+          <router-link to="/dashboard/add-tweet">Add your tweet</router-link>
+        </button>
+      </div>
 
       <div class="column is-12">
         <div class="buttons">

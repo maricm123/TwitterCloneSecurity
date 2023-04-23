@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import BusinessSignUp from "../views/businessuser/BusinessSignUp.vue";
 import DefaultSignUp from "../views/defaultuser/DefaultSignUp.vue";
 import Dashboard from "../views/dashboard/Dashboard.vue";
+import TweetDetail from "../views/dashboard/TweetDetail.vue";
+import AddTweet from "../views/dashboard/AddTweet.vue";
 import UserProfile from "../views/dashboard/UserProfile.vue";
 import store from "../store"
 import Login from "../views/Login.vue";
@@ -31,14 +33,30 @@ const routes = [
     path: "/dashboard",
     name: "dashboard",
     component: Dashboard,
-    meta: {
-      requireLogin: true
-    }
+    // meta: {
+    //   requireLogin: true
+    // }
   },
   {
     path: "/dashboard/user-profile",
     name: "user-profile",
     component: UserProfile,
+    meta: {
+      requireLogin: true
+    }
+  },
+  {
+    path: '/dashboard/tweet/:id',
+    name: 'TweetDetail',
+    component: TweetDetail,
+    // meta: {
+    //   requireLogin: true
+    // }
+  },
+  {
+    path: '/dashboard/add-tweet/',
+    name: 'AddTweet',
+    component: AddTweet,
     meta: {
       requireLogin: true
     }

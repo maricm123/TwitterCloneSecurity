@@ -27,6 +27,7 @@ urlpatterns = [
 
     # tweets
     path('tweet/', views_tweets.TweetList.as_view(), name='tweet'),
+    path('tweets-by-me/', views_tweets.TweetListByUser.as_view(), name='tweets-by-me'),
     path('tweet/<int:pk>/', views_tweets.TweetDetail.as_view(), name='tweet-detail'),
     path('tweet/<int:pk>/like/',
          views_tweets.LikeTweetView.as_view(), name='like_tweet'),

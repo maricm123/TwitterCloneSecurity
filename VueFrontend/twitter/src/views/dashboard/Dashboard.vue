@@ -1,46 +1,17 @@
 <template>
   <div class="container">
     <div class="columns is-multiline">
-      <div class="column is-12">
+      <div v-if="$store.state.isAuthenticated" class="column is full">
+        <button class="button is-gray">
+          <router-link to="/dashboard/add-tweet">Add your tweet</router-link>
+        </button>
+      </div>
+      <div class="column is-full">
         <!-- <h1>Hi {{user.username}}</h1> -->
         <h1 class="title">Tweets</h1>
       </div>
 
-      <!-- <div class="column is-12">
-        <table class="table is-fullwidth">
-          <thead>
-            <tr>
-              <th>Company</th>
-              <th>Contact person</th>
-              <th>Assigned to</th>
-              <th>Status</th>
-              <th></th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr v-for="tweet in tweets" v-bind:key="tweet.id">
-              <td>{{ tweet }}</td>
-              <td>{{ lead.contact_person }}</td>
-              <td>
-                <template
-                  v-if="lead.assigned_to"
-                >{{ lead.assigned_to.first_name }} {{ lead.assigned_to.last_name }}</template>
-              </td>
-              <td>{{ lead.status }}</td>
-              <td>
-                <router-link :to="{ name: 'Lead', params: { id: lead.id }}">Details</router-link>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>-->
-      <div class="card">
-        <div class="card-image">
-          <figure class="image is-4by3">
-            <img src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder image" />
-          </figure>
-        </div>
+      <div class="card" v-for="tweet in tweets" v-bind:key="tweet.id">
         <div class="card-content">
           <div class="media">
             <div class="media-left">
@@ -49,23 +20,33 @@
               </figure>
             </div>
             <div class="media-content">
-              <p class="title is-4">John Smith</p>
-              <p class="subtitle is-6">@johnsmith</p>
+              <p class="title is-4">{{tweet.user.username}}</p>
+              <p class="subtitle is-6">{{tweet.user.email}}</p>
             </div>
           </div>
 
           <div class="content">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            Phasellus nec iaculis mauris.
-            <a>@bulmaio</a>.
-            <a href="#">#css</a>
-            <a href="#">#responsive</a>
+            {{tweet.text}}
             <br />
-            <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+            <time>{{tweet.created_at}}</time>
           </div>
         </div>
+        <button class="button is-black" style="font-color: white">
+          <router-link :to="{ name: 'TweetDetail', params: { id: tweet.id }}">Details</router-link>
+        </button>
       </div>
     </div>
+    <!-- <div class="column">
+      <p class="bd-notification is-info">First column</p>
+      <div class="columns is-mobile">
+        <div class="column">
+          <p class="bd-notification is-info">First nested column</p>
+        </div>
+        <div class="column">
+          <p class="bd-notification is-info">Second nested column</p>
+        </div>
+      </div>
+    </div>-->
   </div>
 </template>
 
@@ -100,3 +81,8 @@ export default {
   }
 };
 </script>
+<style scoped>
+* {
+  position: ;
+}
+</style>

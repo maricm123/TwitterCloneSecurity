@@ -75,3 +75,25 @@ Tweet može da sadrži:
 A. Tekstualni sadržaj
 B. Sliku
 C. Kombinaciju prethodna dva tipa sadržaja
+
+
+19.04
+Treba nasttaviti raditi na dashboardu
+- prikazati sve tweetove za ulogovanog korisnika (datum namestiti da bude normalan)
+date and time format from serialier looks like this 2023-04-23T11:49:02.751420Z
+How i can get normal format like 2023-04-23
+Django serializer
+
+
+
+
+
+- dugme za dodavanje tweeta u user-profile i u dashobbard komponentama - DONE
+- stranica za dodavanje tweeta - DONE
+- odraditi detalje tweeta
+- odraditi lajkovanje tweeta
+
+
+
+23.04
+-
