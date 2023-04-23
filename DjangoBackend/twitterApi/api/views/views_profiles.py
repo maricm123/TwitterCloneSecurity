@@ -10,6 +10,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework import status
+from django.http import JsonResponse
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -89,20 +90,20 @@ class LogoutView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class MyProfileView(APIView):
+# DOdati to da samo user koji je ulogovan moze da vidi svoj profil
+# dodati ako treba jos neka polja u DefaultUserSerializer
+# Napraviti View koji ce da dobija i bussines i default usere ili posebno ili zajedno !!
+class MyProfileView(generics.RetrieveAPIView):
     permission_classes = (IsAuthenticated,)
+    queryset = DefaultUser.objects.all()
+    serializer_class = DefaultUserSerializer
 
-    def get(self, request):
-        # Retrieve the profile for the current user
-        try:
-            profile = request.user
-            print(profile)
-        except Profile.DoesNotExist:
-            return Response({'error': 'Profile not found'}, status=404)
-
-        return Response(profile)
+    def get(self, request, *args, **kwargs):
+        user = self.get_object()
+        print(user)
+        serializer = self.get_serializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class UserProfileView(APIView):
-    pass
-
+    permission_classes = (AllowAny,)

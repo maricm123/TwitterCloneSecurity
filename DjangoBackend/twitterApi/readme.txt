@@ -26,12 +26,6 @@ Mora da prati sve ovo :
  - Podaci - Tekst, slika, datum postavljanja, ko je postavio (Moze i biznis i obican korisnik)
 
 
-
-
-
-
-
-
 SUPER USER
 mihailomaric001@gmail.com
 mihailo
@@ -62,12 +56,6 @@ i na osnovu toga ce se prikazivati odredjene stranice - uradjeno
 - probati namestati i skontati kako ide slanje tokena uz zahtev i na beku namestati permision_class DONE (na primeru logouta, back i front)
 
 
-- tek posle svega ovoga fokusirati se na izmenu lozinke itd, jer mozda i realno nije vezano za ove ostale
-serailizere i viewe. 
-https://medium.com/django-rest/django-rest-framework-change-password-and-update-profile-1db0c144c0a3?source=publication_recirc-----eb1b53ac6d35----3----------------------------
-
-
-
 
 17.04
 Postavljanje tweet-a (običan i biznis korisnik)
@@ -85,15 +73,23 @@ How i can get normal format like 2023-04-23
 Django serializer
 
 
-
-
-
 - dugme za dodavanje tweeta u user-profile i u dashobbard komponentama - DONE
 - stranica za dodavanje tweeta - DONE
-- odraditi detalje tweeta
-- odraditi lajkovanje tweeta
 
 
 
 23.04
--
+- next todos
+
+- odraditi detalje tweeta (razmisliti da li praviti posebno detalje kad user otvara svoj tweet pa da moze da edituje
+ili raditi direktno u ovome TweetDetail)
+- odraditi lajkovanje tweeta
+- videti views_profile MyProfileView objasnjenje sta treba uraditi
+
+
+
+
+
+- tek posle svega ovoga fokusirati se na izmenu lozinke itd, jer mozda i realno nije vezano za ove ostale
+serailizere i viewe. 
+https://medium.com/django-rest/django-rest-framework-change-password-and-update-profile-1db0c144c0a3?source=publication_recirc-----eb1b53ac6d35----3----------------------------

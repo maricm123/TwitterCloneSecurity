@@ -46,11 +46,12 @@ class DefaultUserSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username')
     password = serializers.CharField(write_only=True, source='user.password')
     email = serializers.CharField(source='user.email')
+    user_type = serializers.CharField(source='user.user_type')
 
     class Meta:
         model = DefaultUser
         fields = ('id', 'username', 'password',
-                  'email', 'first_name', 'last_name', 'age', 'address')
+                  'email', 'first_name', 'last_name', 'age', 'address', 'user_type')
         read_only_fields = ('id',)
 
     def create(self, validated_data):
