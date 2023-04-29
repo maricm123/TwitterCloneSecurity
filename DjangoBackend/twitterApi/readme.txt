@@ -83,8 +83,23 @@ Django serializer
 
 - odraditi detalje tweeta (razmisliti da li praviti posebno detalje kad user otvara svoj tweet pa da moze da edituje
 ili raditi direktno u ovome TweetDetail)
+        - u viewu raspoznajem da li ima permisiju ili ne na beku
+        - onda na frontu gadjam current user api i uporedjujem ga sa tweet userom i onda mu ili dajem buttone za edit i delete ili ne
+
+
+
 - odraditi lajkovanje tweeta
 - videti views_profile MyProfileView objasnjenje sta treba uraditi
+
+
+
+29.04
+
+
+
+
+
+
 
 
 

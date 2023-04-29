@@ -50,6 +50,12 @@
 
       <hr />
 
+      <!-- Only show update and delete buttons if the tweet belongs to the currently logged in user -->
+      <div v-if="tweet.user.id === currentUser.id">
+        <button class="button is-info" @click="updateTweet">Update</button>
+        <button class="button is-danger" @click="deleteTweet">Delete</button>
+      </div>
+
       <!-- <div class="column is-12">
         <h2 class="subtitle">Notes</h2>
 
@@ -81,8 +87,18 @@ export default {
     return {
       tweet: {
         user: {}
-      }
+      },
+      currentUser: null
     };
+  },
+  created() {
+    axios
+      .get("/api/current-user/", {
+        headers: { Authorization: `Bearer ${this.$store.state.token}` }
+      })
+      .then(response => {
+        this.currentUser = response.data;
+      });
   },
   mounted() {
     this.getTweet();

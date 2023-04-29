@@ -4,13 +4,15 @@ from rest_framework import generics
 from rest_framework.parsers import MultiPartParser, FormParser
 from ..serializers.serializers_tweets import TweetSerializer
 from tweet.models.tweet import Tweet
+from rest_framework.exceptions import PermissionDenied
 
 
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 
 
 class TweetList(generics.ListCreateAPIView):
+    # Dashboard - svi tvitovi i kreiranje tvita
     queryset = Tweet.objects.all()
     serializer_class = TweetSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -20,20 +22,40 @@ class TweetList(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
 
-class TweetListByUser(generics.ListCreateAPIView):
-    # queryset = Tweet.objects.all()
+class TweetListByUser(generics.ListAPIView):
+    # User profile - tvitovi samo od usera
     serializer_class = TweetSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
 
-    def perform_create(self, serializer):
-        print(self.request.user)
-        serializer.save(user=self.request.user)
+    def get_queryset(self):
+        user = self.request.user
+        return Tweet.objects.filter(user=user)
 
 
 class TweetDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Tweet.objects.all()
     serializer_class = TweetSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def perform_update(self, serializer):
+        tweet = self.get_object()
+        if tweet.user == self.request.user:
+            serializer.save()
+            print("UPDATED")
+        else:
+            print("NEMA PERMISIJE")
+            raise PermissionDenied(
+                "You do not have permission to update this tweet.")
+
+    def perform_destroy(self, instance):
+        tweet = self.get_object()
+        if tweet.user == self.request.user:
+            instance.delete()
+            print("DELETED")
+        else:
+            raise PermissionDenied(
+                "You do not have permission to delete this tweet.")
+
     # vidi exaplanations ako hoces da dodas neke metode ovde da overidujes - 80
 
 

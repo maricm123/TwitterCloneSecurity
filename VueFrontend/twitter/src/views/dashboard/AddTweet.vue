@@ -2,7 +2,7 @@
   <div class="container">
     <div class="columns is-multiline">
       <div class="column is-12">
-        <h1 class="title">Add lead</h1>
+        <h1 class="title">Add tweet</h1>
       </div>
 
       <div class="column is-12">
