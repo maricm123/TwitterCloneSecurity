@@ -56,7 +56,7 @@ export default {
         })
         .then(response => {
           toast({
-            message: "The lead was added",
+            message: "The tweet was added",
             type: "is-success",
             dismissible: true,
             pauseOnHover: true,

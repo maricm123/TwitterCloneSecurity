@@ -18,7 +18,6 @@ class TweetList(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
-        print(self.request.user)
         serializer.save(user=self.request.user)
 
 
@@ -41,9 +40,7 @@ class TweetDetail(generics.RetrieveUpdateDestroyAPIView):
         tweet = self.get_object()
         if tweet.user == self.request.user:
             serializer.save()
-            print("UPDATED")
         else:
-            print("NEMA PERMISIJE")
             raise PermissionDenied(
                 "You do not have permission to update this tweet.")
 
@@ -51,7 +48,6 @@ class TweetDetail(generics.RetrieveUpdateDestroyAPIView):
         tweet = self.get_object()
         if tweet.user == self.request.user:
             instance.delete()
-            print("DELETED")
         else:
             raise PermissionDenied(
                 "You do not have permission to delete this tweet.")

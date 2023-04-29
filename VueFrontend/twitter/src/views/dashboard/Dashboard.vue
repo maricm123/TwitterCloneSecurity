@@ -36,17 +36,6 @@
         </button>
       </div>
     </div>
-    <!-- <div class="column">
-      <p class="bd-notification is-info">First column</p>
-      <div class="columns is-mobile">
-        <div class="column">
-          <p class="bd-notification is-info">First nested column</p>
-        </div>
-        <div class="column">
-          <p class="bd-notification is-info">Second nested column</p>
-        </div>
-      </div>
-    </div>-->
   </div>
 </template>
 
@@ -65,11 +54,9 @@ export default {
   methods: {
     async getTweets() {
       this.$store.commit("setIsLoading", true);
-
       axios
         .get("/api/tweet/")
         .then(response => {
-          console.log(response);
           this.tweets = response.data;
         })
         .catch(error => {
@@ -82,7 +69,4 @@ export default {
 };
 </script>
 <style scoped>
-* {
-  position: ;
-}
 </style>

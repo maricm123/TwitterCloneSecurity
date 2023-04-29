@@ -26,7 +26,7 @@ urlpatterns = [
     path('logout/', views_profiles.LogoutView.as_view(), name='logout'),
     path('my-profile/<int:pk>/',
          views_profiles.MyProfileView.as_view(), name='my-profile'),
-    path('user-profile/', views_profiles.UserProfileView.as_view(), name='my-profile'),
+    #     path('user-profile/', views_profiles.UserProfileView.as_view(), name='my-profile'),
 
     # tweets
     path('tweet/', views_tweets.TweetList.as_view(), name='tweet'),

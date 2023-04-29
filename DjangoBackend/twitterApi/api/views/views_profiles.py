@@ -6,7 +6,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 from profiles.models import BusinessUser, DefaultUser, User
 from ..serializers.serializers_profiles import BusinessUserSerializer, CustomTokenObtainPairSerializer, DefaultUserSerializer, UserSerializer
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework import status
@@ -93,20 +93,60 @@ class LogoutView(APIView):
 # DOdati to da samo user koji je ulogovan moze da vidi svoj profil
 # dodati ako treba jos neka polja u DefaultUserSerializer
 # Napraviti View koji ce da dobija i bussines i default usere ili posebno ili zajedno !!
-class MyProfileView(generics.RetrieveAPIView):
-    permission_classes = (IsAuthenticated,)
-    queryset = DefaultUser.objects.all()
-    serializer_class = DefaultUserSerializer
+class MyProfileView(generics.RetrieveUpdateAPIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
     def get(self, request, *args, **kwargs):
         user = self.get_object()
-        print(user)
-        serializer = self.get_serializer(user)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        if user.user_type == 'default':
+            print("DEFAULT")
+            default_user = DefaultUser.objects.get(user=user)
+            print(default_user)
+            serializer = DefaultUserSerializer(default_user)
+            print(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        if user.user_type == 'business':
+            print("Bussines")
+            business_user = BusinessUser.objects.get(user=user)
+            print(business_user)
+            serializer = BusinessUserSerializer(business_user)
+            print(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def perform_update(self, asd):
+        print("ASDASD")
+        user = self.get_object()
+
+        # Check if the user is the same as the authenticated user
+        if user == self.request.user:
+            if user.user_type == 'business':
+                print("BUSSINES")
+                business_user = BusinessUser.objects.get(user=user)
+                serializer = BusinessUserSerializer(business_user)
+                print(serializer.data)
+                # Ensure data is valid
+                serializer.is_valid(raise_exception=True)
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            elif user.user_type == 'default':
+                print("default")
+                default_user = DefaultUser.objects.get(user=user)
+                print(default_user)
+                serializer = DefaultUserSerializer(default_user)
+                print(serializer.data)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                raise ValidationError("Invalid user type")
+        else:
+            # Raise a PermissionDenied exception if the user is not the same as the authenticated user
+            raise PermissionDenied(
+                "You do not have permission to update this user.")
 
 
-class UserProfileView(APIView):
-    permission_classes = (AllowAny,)
+# class UserProfileView(APIView):
+#     permission_classes = (AllowAny,)
 
 
 class CurrentUserView(generics.RetrieveAPIView):
