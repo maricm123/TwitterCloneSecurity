@@ -34,6 +34,7 @@
             <router-link :to="{ name: 'TweetDetail', params: { id: tweet.id }}">Details</router-link>
           </button>
         </div>
+        <br />
       </div>
     </div>
   </div>

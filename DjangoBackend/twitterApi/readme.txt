@@ -105,13 +105,21 @@ DONE
 - ostao update da se uradi za usera (to sve uraditi i na frontu) - MyProfileView
 
 
-
 02.05
 - lajkovanje tvitera - DONE
-- liked_by lista na tweet detail
+- liked_by lista na tweet detail - DONE
 - update da se uradi za usera (to sve uraditi i na frontu) - MyProfileView
+- Tweet-ove treba sortirati opadajuće prema datumu i
+vremenu objave.
 
 
+03.05 
+za uraditi
+- Podešavanje privatnosti profila (običan i biznis korisnik)
+Profil je nakon kreiranja inicijalno privatan. Sadržaj profila koji su privatni nije
+dostupan profilima koji ga ne prate, dok je sadržaj javnih profila dostupan
+svima. Potrebno je omogućiti korisniku da bira da li je njegov profil javan ili
+privatan.
 
 
 

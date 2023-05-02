@@ -15,7 +15,7 @@ class TweetList(generics.ListCreateAPIView):
     # Dashboard - svi tvitovi i kreiranje tvita
     # Tweet-ove treba sortirati opadajuće prema datumu i vremenu objave.
 
-    queryset = Tweet.objects.all()
+    queryset = Tweet.objects.order_by('-created_at')
     serializer_class = TweetSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
@@ -30,7 +30,7 @@ class TweetListByUser(generics.ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return Tweet.objects.filter(user=user)
+        return Tweet.objects.filter(user=user).order_by('-created_at')
 
 
 class TweetDetail(generics.RetrieveUpdateDestroyAPIView):
