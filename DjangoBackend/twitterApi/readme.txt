@@ -99,7 +99,17 @@ DONE
 
 30.04
 
+- stao sam kod toga da moram promeniti lozinku za mihailo usera jer nije hashovana. - DONE (napravljane novi user, nisam uspeo drugacije)
 
+- nastaviti sa lajkovanje tvitera
+- ostao update da se uradi za usera (to sve uraditi i na frontu) - MyProfileView
+
+
+
+02.05
+- lajkovanje tvitera - DONE
+- liked_by lista na tweet detail
+- update da se uradi za usera (to sve uraditi i na frontu) - MyProfileView
 
 
 

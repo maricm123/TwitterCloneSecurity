@@ -13,6 +13,8 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 
 class TweetList(generics.ListCreateAPIView):
     # Dashboard - svi tvitovi i kreiranje tvita
+    # Tweet-ove treba sortirati opadajuće prema datumu i vremenu objave.
+
     queryset = Tweet.objects.all()
     serializer_class = TweetSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -58,16 +60,15 @@ class TweetDetail(generics.RetrieveUpdateDestroyAPIView):
 class LikeTweetView(generics.UpdateAPIView):
     serializer_class = TweetSerializer
     queryset = Tweet.objects.all()
+    permission_classes = [IsAuthenticatedOrReadOnly]
     http_method_names = ['post', 'delete', 'put']
 
     def update(self, request, *args, **kwargs):
         tweet = self.get_object()
-        print(tweet)
-        user = request.user
-        print(user)
-        if user in tweet.liked_by.all():
-            # Korisnik je već lajkao tweet
-            return Response({'message': 'Već ste lajkovali ovaj tweet.'}, status=status.HTTP_400_BAD_REQUEST)
+        user = self.request.user
+        # if user in tweet.liked_by.all():
+        #     # Korisnik je već lajkao tweet
+        #     return Response({'message': 'Već ste lajkovali ovaj tweet.'}, status=status.HTTP_400_BAD_REQUEST)
 
         tweet.liked_by.add(user)
         tweet.save()
@@ -77,9 +78,7 @@ class LikeTweetView(generics.UpdateAPIView):
 
     def delete(self, request, *args, **kwargs):
         tweet = self.get_object()
-        print(tweet)
-        user = request.user
-        print(user)
+        user = self.request.user
         if user not in tweet.liked_by.all():
             # Korisnik nije lajkao tweet
             return Response({'message': 'Niste lajkovali ovaj tweet.'}, status=status.HTTP_400_BAD_REQUEST)

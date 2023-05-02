@@ -1,17 +1,7 @@
 <template>
   <div class="container">
     <div class="columns is-multiline">
-      <div class="column is-12">
-        <!-- <h1 class="title">{{ client.name }}</h1> -->
-
-        <!-- <div class="buttons">
-          <router-link
-            :to="{ name: 'EditClient', params: { id: client.id }}"
-            class="button is-light"
-          >Edit</router-link>
-          <button class="button is-danger" @click="deleteClient">Delete</button>
-        </div>-->
-      </div>
+      <div class="column is-12"></div>
 
       <div class="column is-6">
         <div class="box">
@@ -55,25 +45,21 @@
         <button class="button is-danger" @click="deleteTweet">Delete</button>
       </div>
 
-      <!-- <div class="column is-12">
-        <h2 class="subtitle">Notes</h2>
-
-        <router-link
-          :to="{ name: 'AddNote', params: { id: client.id }}"
-          class="button is-success mb-6"
-        >Add note</router-link>
-
-        <div class="box" v-for="note in notes" v-bind:key="note.id">
-          <h3 class="is-size-4">{{ note.name }}</h3>
-
-          <p>{{ note.body }}</p>
-
-          <router-link
-            :to="{ name: 'EditNote', params: { id: client.id, note_id: note.id }}"
-            class="button is-success mt-6"
-          >Edit note</router-link>
-        </div>
-      </div>-->
+      <div
+        v-if="$store.state.isAuthenticated"
+        :class="liked ? 'bg-red-500 text-white' : 'bg-white text-gray-800'"
+      >
+        <button
+          class="button"
+          :class="{ 'unlike': liked }"
+          @click="likeTweet"
+        >{{ liked ? 'Unlike' : 'Like' }}</button>
+      </div>
+      <div v-else>
+        You need to
+        <a href>login</a> to like this tweet
+      </div>
+      <div class="liked-by">Liked by:</div>
     </div>
   </div>
 </template>
@@ -87,16 +73,55 @@ export default {
       tweet: {
         user: {}
       },
-      currentUser: null
+      currentUser: null,
+      liked: false
     };
   },
-  created() {
-    this.getCurrentUser();
-  },
-  mounted() {
+  async created() {
+    this.$store.dispatch("getCurrentUser").then(currentUser => {
+      // Do something with the current user data
+      this.currentUser = currentUser;
+    });
+    // ako mi ne treba nista od ove fije osim da se storuje u state onda koristim samo ovo:
+    //   mounted() {
+    //   this.$store.dispatch("getCurrentUser");
+    // }
     this.getTweet();
   },
+  mounted() {},
   methods: {
+    async likeTweet() {
+      if (this.tweet.liked_by.includes(this.$store.state.currentUser.id)) {
+        // The current user has liked this tweet
+        const tweetID = this.$route.params.id;
+        await axios
+          .delete(`/api/tweet/${tweetID}/like/`, {
+            headers: { Authorization: `Bearer ${this.$store.state.token}` }
+          })
+          .then(response => {
+            this.liked = false;
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      } else {
+        const tweetID = this.$route.params.id;
+        await axios
+          .put(
+            `/api/tweet/${tweetID}/like/`,
+            {},
+            {
+              headers: { Authorization: `Bearer ${this.$store.state.token}` }
+            }
+          )
+          .then(response => {
+            this.liked = true;
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }
+    },
     async deleteTweet() {
       this.$store.commit("setIsLoading", true);
       const tweetID = this.$route.params.id;
@@ -116,24 +141,23 @@ export default {
     async getTweet() {
       this.$store.commit("setIsLoading", true);
       const tweetID = this.$route.params.id;
-      console.log(tweetID);
       await axios
         .get(`/api/tweet/${tweetID}/`)
         .then(response => {
           this.tweet = response.data;
           this.tweet.user = response.data.user;
+
+          if (
+            response.data.liked_by.includes(this.$store.state.currentUser.id)
+          ) {
+            // The current user has liked this tweet
+            this.liked = true;
+          } else {
+            this.liked = false;
+          }
         })
         .catch(error => {
           console.log(error);
-        });
-    },
-    async getCurrentUser() {
-      axios
-        .get("/api/current-user/", {
-          headers: { Authorization: `Bearer ${this.$store.state.token}` }
-        })
-        .then(response => {
-          this.currentUser = response.data;
         });
     },
     async updateTweet() {
@@ -143,3 +167,22 @@ export default {
   }
 };
 </script>
+<style lang="css" scoped>
+.button {
+  background-color: rgb(0, 0, 0);
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.unlike {
+  background-color: #ffcc00;
+  color: rgb(187, 35, 35);
+}
+
+.liked-by {
+  margin: auto;
+}
+</style>

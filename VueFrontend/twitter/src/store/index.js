@@ -1,11 +1,12 @@
 import { createStore } from "vuex";
-
+import axios from 'axios';
 export default createStore({
   state: {
     isLoading: false,
     isAuthenticated: false,
     token: '',
-    refresh: ''
+    refresh: '',
+    currentUser: null,
   },
   getters: {},
   // Mutations are functions in Vuex that modify the state of the store.
@@ -19,6 +20,9 @@ export default createStore({
         state.token = ''
         state.isAuthenticated = false
       }
+    },
+    SET_CURRENT_USER(state, currentUser) {
+      state.currentUser = currentUser;
     },
     setIsLoading(state, status) {
       state.isLoading = status
@@ -40,6 +44,27 @@ export default createStore({
       state.isAuthenticated = false
     }
   },
-  actions: {},
+  actions: {
+    async getCurrentUser({ commit, state }) {
+      // Check if the user is already logged in
+      if (state.currentUser) {
+        return state.currentUser;
+      } else {
+        state.currentUser = null;
+      }
+
+      // Make the API request to get the current user
+      const response = await axios.get("/api/current-user/", {
+        headers: { Authorization: `Bearer ${state.token}` }
+      });
+
+      // Commit the SET_CURRENT_USER mutation with the response data
+      const currentUser = response.data;
+      commit("SET_CURRENT_USER", currentUser);
+
+      // Return the current user data
+      return currentUser;
+    }
+  },
   modules: {},
 });
