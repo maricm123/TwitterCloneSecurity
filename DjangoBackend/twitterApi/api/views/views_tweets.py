@@ -66,9 +66,6 @@ class LikeTweetView(generics.UpdateAPIView):
     def update(self, request, *args, **kwargs):
         tweet = self.get_object()
         user = self.request.user
-        # if user in tweet.liked_by.all():
-        #     # Korisnik je već lajkao tweet
-        #     return Response({'message': 'Već ste lajkovali ovaj tweet.'}, status=status.HTTP_400_BAD_REQUEST)
 
         tweet.liked_by.add(user)
         tweet.save()
@@ -79,12 +76,13 @@ class LikeTweetView(generics.UpdateAPIView):
     def delete(self, request, *args, **kwargs):
         tweet = self.get_object()
         user = self.request.user
-        if user not in tweet.liked_by.all():
-            # Korisnik nije lajkao tweet
-            return Response({'message': 'Niste lajkovali ovaj tweet.'}, status=status.HTTP_400_BAD_REQUEST)
 
         tweet.liked_by.remove(user)
         tweet.save()
 
         serializer = self.get_serializer(tweet)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class LikedByUsersView(generics.RetrieveAPIView):
+    pass

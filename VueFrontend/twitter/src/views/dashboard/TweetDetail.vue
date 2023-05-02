@@ -45,10 +45,7 @@
         <button class="button is-danger" @click="deleteTweet">Delete</button>
       </div>
 
-      <div
-        v-if="$store.state.isAuthenticated"
-        :class="liked ? 'bg-red-500 text-white' : 'bg-white text-gray-800'"
-      >
+      <div v-if="$store.state.isAuthenticated">
         <button
           class="button"
           :class="{ 'unlike': liked }"
@@ -59,7 +56,13 @@
         You need to
         <a href>login</a> to like this tweet
       </div>
-      <div class="liked-by">Liked by:</div>
+      <!-- <div class="liked-by">Liked by: {{liked_by}}</div> -->
+      <div>
+        <p>Liked by:</p>
+        <ul>
+          <li v-for="username in liked_by" v-bind:key="username">{{ username }}</li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -74,7 +77,8 @@ export default {
         user: {}
       },
       currentUser: null,
-      liked: false
+      liked: false,
+      liked_by: []
     };
   },
   async created() {
@@ -91,7 +95,12 @@ export default {
   mounted() {},
   methods: {
     async likeTweet() {
-      if (this.tweet.liked_by.includes(this.$store.state.currentUser.id)) {
+      if (
+        // this.tweet.liked_by.includes(this.$store.state.currentUser.username)
+        Object.values(this.tweet.liked_by).includes(
+          this.$store.state.currentUser.username
+        )
+      ) {
         // The current user has liked this tweet
         const tweetID = this.$route.params.id;
         await axios
@@ -146,9 +155,11 @@ export default {
         .then(response => {
           this.tweet = response.data;
           this.tweet.user = response.data.user;
-
+          this.liked_by = response.data.liked_by;
           if (
-            response.data.liked_by.includes(this.$store.state.currentUser.id)
+            Object.values(response.data.liked_by).includes(
+              this.$store.state.currentUser.username
+            )
           ) {
             // The current user has liked this tweet
             this.liked = true;
