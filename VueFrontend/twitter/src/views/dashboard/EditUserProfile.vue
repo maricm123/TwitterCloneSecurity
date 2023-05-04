@@ -163,7 +163,7 @@ export default {
             duration: 2000,
             position: "bottom-right"
           });
-          this.$router.push(`/dashboard/user-profile/`);
+          this.$router.push(`/dashboard/my-user-profile/`);
         })
         .catch(error => {
           console.log(error);

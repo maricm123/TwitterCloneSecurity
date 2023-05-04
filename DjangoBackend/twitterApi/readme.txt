@@ -118,11 +118,24 @@ za uraditi
 - Podešavanje privatnosti profila (običan i biznis korisnik) - DONE
 - ostao update da se uradi za usera (to sve uraditi i na frontu) - MyProfileView - DONE
 
-- Profil je nakon kreiranja inicijalno privatan. Sadržaj profila koji su privatni nije
-dostupan profilima koji ga ne prate, dok je sadržaj javnih profila dostupan
-svima. Potrebno je omogućiti korisniku da bira da li je njegov profil javan ili
-privatan.
-        
+04.05
+- button user profile na tweet detail ubaciti u funckiji (pozivamo sa beka getovanje samo ussera) - DONE
+- zapracivanje profila - videti u specifikaciji 
+        razlozeno na sitnije:
+                -model napisati ( sta ubaciti u usera za followerse i koga follovuje) - DONE
+                - napisati viewe (za request followa itd) - DONE
+
+05.05 
+- prelistati da li moze da se krene sa front delom za zapracivanje usera
+- izlistavanje home feeda na osnovu ljudi koji te prate itd itd (ovo mozda ostaviti za kasnije kad se bude moglo testirati na frontu)
+- krenuti sa izradom front dela za zapracivanje usera
+        - razlozeno na sitnije:
+
+
+
+
+- https://mentix02.medium.com/writing-instagram-in-python-generating-feeds-5bd8399bded9
+OVDE MOGU VIDETI kako izlistati tvitove na osnovu usera koje pratim itd itd ovo mi treba za home feed
 
 - tek posle svega ovoga fokusirati se na izmenu lozinke itd, jer mozda i realno nije vezano za ove ostale
 serailizere i viewe. 

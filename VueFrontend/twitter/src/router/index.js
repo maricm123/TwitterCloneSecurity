@@ -4,7 +4,9 @@ import DefaultSignUp from "../views/defaultuser/DefaultSignUp.vue";
 import Dashboard from "../views/dashboard/Dashboard.vue";
 import TweetDetail from "../views/dashboard/TweetDetail.vue";
 import AddTweet from "../views/dashboard/AddTweet.vue";
+import MyUserProfile from "../views/dashboard/MyUserProfile.vue";
 import UserProfile from "../views/dashboard/UserProfile.vue";
+
 import EditUserProfile from "../views/dashboard/EditUserProfile.vue";
 import store from "../store"
 import Login from "../views/Login.vue";
@@ -39,9 +41,9 @@ const routes = [
     // }
   },
   {
-    path: "/dashboard/user-profile",
-    name: "user-profile",
-    component: UserProfile,
+    path: "/dashboard/my-user-profile",
+    name: "my-user-profile",
+    component: MyUserProfile,
     meta: {
       requireLogin: true
     }
@@ -63,7 +65,15 @@ const routes = [
     }
   },
   {
-    path: '/dashboard/user-profile/edit/:id',
+    path: '/dashboard/user-profile/:id',
+    name: 'UserProfile',
+    component: UserProfile,
+    meta: {
+      requireLogin: true
+    }
+  },
+  {
+    path: '/dashboard/my-user-profile/edit/:id',
     name: 'EditUserProfile',
     component: EditUserProfile,
     meta: {

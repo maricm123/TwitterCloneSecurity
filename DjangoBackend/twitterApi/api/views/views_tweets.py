@@ -4,7 +4,9 @@ from rest_framework import generics
 from rest_framework.parsers import MultiPartParser, FormParser
 from ..serializers.serializers_tweets import TweetSerializer
 from tweet.models.tweet import Tweet
+from profiles.models.user import User
 from rest_framework.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404
 
 
 from rest_framework import generics
@@ -23,13 +25,26 @@ class TweetList(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
 
+class TweetListByMe(generics.ListAPIView):
+    # User profile - tvitovi samo od usera koji je ulogovan
+    serializer_class = TweetSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Tweet.objects.filter(user=user).order_by('-created_at')
+
+
 class TweetListByUser(generics.ListAPIView):
     # User profile - tvitovi samo od usera
     serializer_class = TweetSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        user = self.request.user
+        # Get the user ID from the URL parameter
+        user_id = self.kwargs.get('pk')
+        # Retrieve the user object from the database
+        user = get_object_or_404(User, id=user_id)
         return Tweet.objects.filter(user=user).order_by('-created_at')
 
 

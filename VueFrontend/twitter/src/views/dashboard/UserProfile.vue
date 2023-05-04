@@ -2,13 +2,7 @@
   <div class="container">
     <div class="columns is-multiline">
       <div class="column is-12">
-        <h1 class="title">User Profile - {{email}}</h1>
-        <button class="button" @click="editUser">Edit profile</button>
-      </div>
-      <div class="column is full">
-        <button class="button is-light">
-          <router-link to="/dashboard/add-tweet">Add your tweet</router-link>
-        </button>
+        <h1 class="title">User Profile - {{user.email}}</h1>
       </div>
 
       <div class="card" v-for="tweet in tweets" v-bind:key="tweet.id">
@@ -35,10 +29,6 @@
           <router-link :to="{ name: 'TweetDetail', params: { id: tweet.id }}">Details</router-link>
         </button>
       </div>
-
-      <div class="column is-12">
-        <button @click="logout()" class="button is-danger">Log out</button>
-      </div>
     </div>
   </div>
 </template>
@@ -50,55 +40,35 @@ export default {
   data() {
     return {
       tweets: [],
-      currentUser: null,
-      email: null
+      user: {}
     };
   },
   created() {
-    this.$store.dispatch("getCurrentUser").then(currentUser => {
-      // Do something with the current user data
-      this.currentUser = currentUser;
-      this.email = currentUser.email;
-      this.privacy = currentUser.account_status;
-    });
+    this.getUser();
   },
   methods: {
-    async logout() {
-      const refresh = localStorage.getItem("refresh");
-      await axios
-        .post(
-          "/api/logout/",
-          { refresh },
-          {
-            headers: { Authorization: `Bearer ${this.$store.state.token}` }
-          }
-        )
-        .then(response => {
-          console.log("Logged out");
-        })
-        .catch(error => {
-          console.log(JSON.stringify(error));
-        });
-      this.$store.commit("removeToken");
-      axios.defaults.headers.common["Authorization"] = "";
-      localStorage.removeItem("token");
-      localStorage.removeItem("refresh");
-      localStorage.removeItem("role");
-
-      this.$router.push("/login");
-    },
     async getUserTweets() {
+      const userID = this.$route.params.id;
       await axios
-        .get("/api/tweets-by-me/", {
+        .get(`/api/tweets-by-user/${userID}`, {
           headers: { Authorization: `Bearer ${this.$store.state.token}` }
         })
         .then(response => {
           this.tweets = response.data;
         });
     },
-    async editUser() {
-      // Navigate to the tweet update page
-      this.$router.push(`/dashboard/user-profile/edit/${this.currentUser.id}/`);
+    async getUser() {
+      this.$store.commit("setIsLoading", true);
+      const userID = this.$route.params.id;
+      axios
+        .get(`/api/my-profile/${userID}/`)
+        .then(response => {
+          this.user = response.data;
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      this.$store.commit("setIsLoading", false);
     }
   },
 

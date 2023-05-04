@@ -3,11 +3,6 @@ from tweet.models.tweet import Tweet
 from .serializers_profiles import UserSerializer
 
 
-# class UsernameRelatedField(serializers.RelatedField):
-#     def to_representation(self, value):
-#         return value.username
-
-
 class TweetSerializer(serializers.ModelSerializer):
     # user = serializers.ReadOnlyField(source='user.email')
     user = UserSerializer(required=False)

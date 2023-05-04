@@ -14,4 +14,4 @@ class Tweet(models.Model):
         User, on_delete=models.CASCADE, related_name='tweets')
 
     def __str__(self):
-        return self.user.username
+        return self.text

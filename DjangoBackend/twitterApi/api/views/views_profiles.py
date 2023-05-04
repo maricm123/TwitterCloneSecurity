@@ -5,13 +5,15 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 from profiles.models import BusinessUser, DefaultUser, User
-from ..serializers.serializers_profiles import BusinessUserSerializer, CustomTokenObtainPairSerializer, DefaultUserSerializer, UserSerializer, BusinessUserSerializerForUpdate, DefaultUserSerializerForUpdate
+from ..serializers.serializers_profiles import BusinessUserSerializer, CustomTokenObtainPairSerializer, FollowRequestSerializer, DefaultUserSerializer, UserSerializer, BusinessUserSerializerForUpdate, DefaultUserSerializerForUpdate
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework import status
 from django.http import JsonResponse
 from django.core.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404
+from profiles.models.follow_request import FollowRequest
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -139,6 +141,8 @@ class MyProfileView(generics.RetrieveUpdateAPIView):
             raise PermissionDenied(
                 "You do not have permission to update this user.")
 
+# View to get current user on client side
+
 
 class CurrentUserView(generics.RetrieveAPIView):
     serializer_class = UserSerializer
@@ -146,3 +150,76 @@ class CurrentUserView(generics.RetrieveAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+class FollowUserAPIView(APIView):
+    """
+    APIView to make a request (or directly follow is user to be followed
+    has a public account) by an authenticated user.
+    """
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        to_follow_id = self.kwargs.get("pk")
+        if not to_follow_id:
+            return Response(
+                {'error': 'Follow request\'s user ID not provided.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        user = get_object_or_404(User, id=to_follow_id)
+        self.request.user.follow(user)
+        return Response({'detail': 'requested'})
+
+
+class FollowRequestActionView(APIView):
+
+    """
+    APIView to accept or reject a FollowRequest by the person
+    who is being requested to act upon said request.
+    """
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        try:
+            # action is 1 or 2 from frontend (1 is accepted request, 2 is rejected request)
+            action = self.kwargs.get('action')
+            print(action)
+            follow_request_id = self.kwargs.get('follow_request_id')
+            print(follow_request_id)
+        except KeyError as field:
+            return Response(
+                {'error': f'{str(field)} not provided.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        follow_request: FollowRequest = get_object_or_404(
+            FollowRequest, id=follow_request_id
+        )
+
+        resp = {'detail': 'rejected'}
+
+        if action == 1:
+            print("!!!!!!")
+            resp['detail'] = 'accepted'
+            follow_request.accept()
+        else:
+            print("ELSEEEEE")
+            follow_request.reject()
+
+        return Response(resp)
+
+
+class FollowRequestListView(generics.ListAPIView):
+    # ovo je view samo za ulogovanog korisnika, treba napraviti isti ovakav view samo za usera koji se trazi (iz url-a)
+    permission_classes = (IsAuthenticated,)
+    serializer_class = FollowRequestSerializer
+
+    #  koristiti metode tj querysetove koji su napisani u user modelu, umesto ovog dole sto sam pisao
+    def get_queryset(self):
+        # ovo je lista usera koji prate mene (tj usera koji je pozvao ovo)
+        print(self.request.user.followed_by.all())
+        # ovo je lista usera koje ja pratim
+        print(self.request.user.follows.all())
+
+        # ovo je lista zahteva za pracenje
+        print(self.request.user.requests.all())
+        return self.request.user.requests.all()

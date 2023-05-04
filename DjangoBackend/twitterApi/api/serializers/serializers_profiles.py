@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from profiles.models.business_user import BusinessUser
 from profiles.models.default_user import DefaultUser
+from profiles.models.follow_request import FollowRequest
 from rest_framework.validators import UniqueValidator
 
 User = get_user_model()
@@ -174,3 +175,9 @@ class DefaultUserSerializerForUpdate(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
+
+class FollowRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FollowRequest
+        fields = '__all__'

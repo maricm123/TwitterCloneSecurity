@@ -26,15 +26,26 @@ urlpatterns = [
     path('logout/', views_profiles.LogoutView.as_view(), name='logout'),
     path('my-profile/<int:pk>/',
          views_profiles.MyProfileView.as_view(), name='my-profile'),
-    #     path('user-profile/', views_profiles.UserProfileView.as_view(), name='my-profile'),
 
     # tweets
     path('tweet/', views_tweets.TweetList.as_view(), name='tweet'),
-    path('tweets-by-me/', views_tweets.TweetListByUser.as_view(), name='tweets-by-me'),
+    path('tweets-by-me/', views_tweets.TweetListByMe.as_view(), name='tweets-by-me'),
+    path('tweets-by-user/<int:pk>/', views_tweets.TweetListByUser.as_view(),
+         name='tweets-by-user'),
 
 
 
     path('tweet/<int:pk>/', views_tweets.TweetDetail.as_view(), name='tweet-detail'),
     path('tweet/<int:pk>/like/',
          views_tweets.LikeTweetView.as_view(), name='like_tweet'),
+
+
+    # following
+    path('follow-user/<int:pk>/',
+         views_profiles.FollowUserAPIView.as_view(), name='follow-user'),
+    path('follow-request-action/<int:action>/<int:follow_request_id>/',
+         views_profiles.FollowRequestActionView.as_view(), name='follow-request-action'),
+
+    path('follow-list/',
+         views_profiles.FollowRequestListView.as_view(), name='follow-list'),
 ]

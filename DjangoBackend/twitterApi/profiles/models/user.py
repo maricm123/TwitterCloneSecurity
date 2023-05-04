@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import PermissionsMixin, Permission
+from django.contrib.auth import get_user_model
+from .follow_request import FollowRequest
 
 
 class CustomUserManager(BaseUserManager):
@@ -65,6 +67,9 @@ class User(
     user_type = models.CharField(
         max_length=10, choices=USER_TYPE_CHOICES, null=True, blank=True)
 
+    follows = models.ManyToManyField(
+        'User', blank=True, related_name='followed_by')
+
     objects = CustomUserManager()
 
     USERNAME_FIELD = "email"  # used as the unique identifier
@@ -73,3 +78,32 @@ class User(
 
     def __str__(self):
         return self.email
+
+    def unfollow(self, user: get_user_model) -> None:
+        """ Helper function to remove a user from this users following list. """
+        self._follows.remove(user)
+
+    def follow(self, user: get_user_model) -> None:
+        """ Helper function to add user to a follower list. """
+
+        if user.id == self.id:
+            # ako user sam sebe zapracuje ne radi nista
+            return
+
+        if user.account_status == 'PRIVATE':
+            print("PRIVATE")
+            FollowRequest.objects.create(requester=self, to_follow=user)
+        elif user.account_status == 'OPEN':
+            # print(user)
+            print("OPENNNN")
+            self.follows.add(user)
+
+    @property
+    def following(self) -> models.QuerySet:
+        """ Returns a QuerySet of Users that this user follows. """
+        return self.follows.all()
+
+    @property
+    def followers(self) -> models.QuerySet:
+        """ Returns a QuerySet of Users following this user. """
+        return self.followed_by.all()

@@ -33,7 +33,7 @@
             {{ tweet.user.email }}
           </p>
           <br />
-          <button class="button is-submit">User profile</button>
+          <button class="button is-submit" @click="userProfile">User profile</button>
         </div>
       </div>
 
@@ -171,9 +171,14 @@ export default {
           console.log(error);
         });
     },
+    // ova funkcionalnost i delete verovatno ne treba.
     async updateTweet() {
       // Navigate to the tweet update page
       this.$router.push(`/dashboard/tweets/${this.tweet.id}/update/`);
+    },
+    async userProfile() {
+      // Navigate to the user profile page
+      this.$router.push(`/dashboard/user-profile/${this.tweet.user.id}`);
     }
   }
 };
