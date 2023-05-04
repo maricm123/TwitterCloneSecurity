@@ -5,12 +5,13 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 from profiles.models import BusinessUser, DefaultUser, User
-from ..serializers.serializers_profiles import BusinessUserSerializer, CustomTokenObtainPairSerializer, DefaultUserSerializer, UserSerializer
+from ..serializers.serializers_profiles import BusinessUserSerializer, CustomTokenObtainPairSerializer, DefaultUserSerializer, UserSerializer, BusinessUserSerializerForUpdate, DefaultUserSerializerForUpdate
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework import status
 from django.http import JsonResponse
+from django.core.exceptions import PermissionDenied
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -68,7 +69,6 @@ class UserLoginView(TokenObtainPairView, JWTAuthentication):
             "user": user_serializer.data,
             "user_type": user_type,
         }
-        # print(response_data, "RESPONSE DATA")
 
         return Response(response_data)
 
@@ -101,52 +101,43 @@ class MyProfileView(generics.RetrieveUpdateAPIView):
     def get(self, request, *args, **kwargs):
         user = self.get_object()
         if user.user_type == 'default':
-            print("DEFAULT")
             default_user = DefaultUser.objects.get(user=user)
-            print(default_user)
             serializer = DefaultUserSerializer(default_user)
-            print(serializer.data)
             return Response(serializer.data, status=status.HTTP_200_OK)
         if user.user_type == 'business':
-            print("Bussines")
             business_user = BusinessUser.objects.get(user=user)
-            print(business_user)
             serializer = BusinessUserSerializer(business_user)
-            print(serializer.data)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
     def perform_update(self, asd):
-        print("ASDASD")
         user = self.get_object()
 
         # Check if the user is the same as the authenticated user
         if user == self.request.user:
             if user.user_type == 'business':
-                print("BUSSINES")
-                business_user = BusinessUser.objects.get(user=user)
-                serializer = BusinessUserSerializer(business_user)
-                print(serializer.data)
-                # Ensure data is valid
+                business_user = BusinessUser.objects.get(
+                    user=user)
+                # pass request data to the serializer instance
+                serializer = BusinessUserSerializerForUpdate(
+                    business_user, data=self.request.data)
                 serializer.is_valid(raise_exception=True)
+                # Ensure data is valid
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
             elif user.user_type == 'default':
-                print("default")
                 default_user = DefaultUser.objects.get(user=user)
-                print(default_user)
-                serializer = DefaultUserSerializer(default_user)
-                print(serializer.data)
+                # pass request data to the serializer instance
+                serializer = DefaultUserSerializerForUpdate(
+                    default_user, data=self.request.data)
+                serializer.is_valid(raise_exception=True)
+                # Ensure data is valid
+                serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
             else:
                 raise ValidationError("Invalid user type")
         else:
-            # Raise a PermissionDenied exception if the user is not the same as the authenticated user
             raise PermissionDenied(
                 "You do not have permission to update this user.")
-
-
-# class UserProfileView(APIView):
-#     permission_classes = (AllowAny,)
 
 
 class CurrentUserView(generics.RetrieveAPIView):

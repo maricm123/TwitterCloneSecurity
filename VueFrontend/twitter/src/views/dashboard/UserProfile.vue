@@ -2,7 +2,8 @@
   <div class="container">
     <div class="columns is-multiline">
       <div class="column is-12">
-        <h1 class="title">User Profile</h1>
+        <h1 class="title">User Profile - {{email}}</h1>
+        <button class="button" @click="editUser">Edit profile</button>
       </div>
       <div class="column is full">
         <button class="button is-light">
@@ -36,14 +37,7 @@
       </div>
 
       <div class="column is-12">
-        <div class="buttons">
-          <!-- <router-link
-            :to="{ name: 'EditMember', params: { id: $store.state.user.id }}"
-            class="button is-light"
-          >Edit</router-link>-->
-
-          <button @click="logout()" class="button is-danger">Log out</button>
-        </div>
+        <button @click="logout()" class="button is-danger">Log out</button>
       </div>
     </div>
   </div>
@@ -55,8 +49,18 @@ export default {
   name: "UserProfile",
   data() {
     return {
-      tweets: []
+      tweets: [],
+      currentUser: null,
+      email: null
     };
+  },
+  created() {
+    this.$store.dispatch("getCurrentUser").then(currentUser => {
+      // Do something with the current user data
+      this.currentUser = currentUser;
+      this.email = currentUser.email;
+      this.privacy = currentUser.account_status;
+    });
   },
   methods: {
     async logout() {
@@ -89,11 +93,15 @@ export default {
           headers: { Authorization: `Bearer ${this.$store.state.token}` }
         })
         .then(response => {
-          console.log(response);
           this.tweets = response.data;
         });
+    },
+    async editUser() {
+      // Navigate to the tweet update page
+      this.$router.push(`/dashboard/user-profile/edit/${this.currentUser.id}/`);
     }
   },
+
   mounted() {
     this.getUserTweets();
   }

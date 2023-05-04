@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from profiles.models.business_user import BusinessUser
 from profiles.models.default_user import DefaultUser
-
+from rest_framework.validators import UniqueValidator
 
 User = get_user_model()
 
@@ -31,7 +31,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'password', 'email', 'user_type',)
+        fields = ('id', 'username', 'password', 'email',
+                  'user_type', 'account_status',)
         read_only_fields = ('id', 'user_type',)
 
     def create(self, validated_data):
@@ -45,13 +46,15 @@ class DefaultUserSerializer(serializers.ModelSerializer):
     """
     username = serializers.CharField(source='user.username')
     password = serializers.CharField(write_only=True, source='user.password')
-    email = serializers.CharField(source='user.email')
+    email = serializers.CharField(source='user.email', validators=[
+                                  UniqueValidator(queryset=User.objects.all())])
     user_type = serializers.CharField(source='user.user_type')
+    account_status = serializers.CharField(source='user.account_status')
 
     class Meta:
         model = DefaultUser
         fields = ('id', 'username', 'password',
-                  'email', 'first_name', 'last_name', 'age', 'address', 'user_type')
+                  'email', 'first_name', 'last_name', 'age', 'address', 'user_type', 'account_status',)
         read_only_fields = ('id',)
 
     def create(self, validated_data):
@@ -67,17 +70,18 @@ class BusinessUserSerializer(serializers.ModelSerializer):
     """
     Serializer for the Business User model. Inherits the base User serializer.
     """
-    from rest_framework.validators import UniqueValidator
 
     username = serializers.CharField(source='user.username')
     password = serializers.CharField(write_only=True, source='user.password')
     email = serializers.CharField(source='user.email', validators=[
                                   UniqueValidator(queryset=User.objects.all())])
+    user_type = serializers.CharField(source='user.user_type')
+    account_status = serializers.CharField(source='user.account_status')
 
     class Meta:
         model = BusinessUser
-        fields = ('id', 'username', 'password',
-                  'email', 'company_name', 'website')
+        fields = ('id', 'username', 'password', 'user_type',
+                  'email',  'account_status', 'company_name', 'website',)
         # fields = ('id', 'user', 'company_name', 'website')
         read_only_fields = ('id',)
 
@@ -89,3 +93,84 @@ class BusinessUserSerializer(serializers.ModelSerializer):
             user=user, **validated_data)
 
         return business_user
+
+
+class BusinessUserSerializerForUpdate(serializers.ModelSerializer):
+    """
+    Serializer for the Business User model. Inherits the base User serializer.
+    """
+    from rest_framework.validators import UniqueValidator
+
+    username = serializers.CharField(source='user.username')
+    email = serializers.CharField(source='user.email')
+    account_status = serializers.CharField(source='user.account_status')
+
+    class Meta:
+        model = BusinessUser
+        fields = ('id', 'username',
+                  'email',  'account_status', 'company_name', 'website',)
+        # fields = ('id', 'user', 'company_name', 'website')
+        read_only_fields = ('id',)
+
+    def create(self, validated_data):
+        user_data = validated_data.pop('user')
+        user_type = user_data.pop('user_type', 'business')
+        user = User.objects.create_user(**user_data, user_type=user_type)
+        business_user = BusinessUser.objects.create(
+            user=user, **validated_data)
+
+        return business_user
+
+    def update(self, instance, validated_data):
+        # Update the related User object
+        user_data = validated_data.pop('user', {})
+        user = instance.user
+        for attr, value in user_data.items():
+            setattr(user, attr, value)
+        user.save()
+
+        # Update the BusinessUser object
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        return instance
+
+
+class DefaultUserSerializerForUpdate(serializers.ModelSerializer):
+    """
+    Serializer for the Default User model. Inherits the base User serializer.
+    """
+    username = serializers.CharField(source='user.username')
+    email = serializers.CharField(source='user.email')
+    user_type = serializers.CharField(source='user.user_type')
+    account_status = serializers.CharField(source='user.account_status')
+
+    class Meta:
+        model = DefaultUser
+        fields = ('id', 'username',
+                  'email', 'first_name', 'last_name', 'age', 'address', 'user_type', 'account_status',)
+        read_only_fields = ('id',)
+
+    def create(self, validated_data):
+        user_data = validated_data.pop('user')
+        user_type = user_data.pop('user_type', 'default')
+        user = User.objects.create_user(**user_data, user_type=user_type)
+        default_user = DefaultUser.objects.create(user=user, **validated_data)
+
+        return default_user
+
+    def update(self, instance, validated_data):
+        # Update the related User object
+        user_data = validated_data.pop('user', {})
+        user = instance.user
+        for attr, value in user_data.items():
+            setattr(user, attr, value)
+        user.save()
+
+        # Update the BusinessUser object
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        return instance

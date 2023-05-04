@@ -64,7 +64,6 @@ export default {
           const refresh = response.data.refresh;
           const role = response.data.user_type;
 
-          console.log(response, "RESPONSE DATA");
           this.$store.commit("setToken", token);
           this.$store.commit("setRefresh", refresh);
           this.$store.commit("setRole", role);

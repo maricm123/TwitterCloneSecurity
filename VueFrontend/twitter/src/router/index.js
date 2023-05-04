@@ -5,6 +5,7 @@ import Dashboard from "../views/dashboard/Dashboard.vue";
 import TweetDetail from "../views/dashboard/TweetDetail.vue";
 import AddTweet from "../views/dashboard/AddTweet.vue";
 import UserProfile from "../views/dashboard/UserProfile.vue";
+import EditUserProfile from "../views/dashboard/EditUserProfile.vue";
 import store from "../store"
 import Login from "../views/Login.vue";
 
@@ -57,6 +58,14 @@ const routes = [
     path: '/dashboard/add-tweet/',
     name: 'AddTweet',
     component: AddTweet,
+    meta: {
+      requireLogin: true
+    }
+  },
+  {
+    path: '/dashboard/user-profile/edit/:id',
+    name: 'EditUserProfile',
+    component: EditUserProfile,
     meta: {
       requireLogin: true
     }
