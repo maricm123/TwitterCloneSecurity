@@ -5,7 +5,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 from profiles.models import BusinessUser, DefaultUser, User
-from ..serializers.serializers_profiles import BusinessUserSerializer, CustomTokenObtainPairSerializer, FollowRequestSerializer, DefaultUserSerializer, UserSerializer, BusinessUserSerializerForUpdate, DefaultUserSerializerForUpdate
+from ..serializers.serializers_profiles import BusinessUserSerializer, CustomTokenObtainPairSerializer, FollowersSerializer, FollowRequestSerializer, DefaultUserSerializer, UserSerializer, BusinessUserSerializerForUpdate, DefaultUserSerializerForUpdate
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
@@ -166,7 +166,9 @@ class FollowUserAPIView(APIView):
                 {'error': 'Follow request\'s user ID not provided.'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
         user = get_object_or_404(User, id=to_follow_id)
+
         self.request.user.follow(user)
         return Response({'detail': 'requested'})
 
@@ -215,11 +217,40 @@ class FollowRequestListView(generics.ListAPIView):
 
     #  koristiti metode tj querysetove koji su napisani u user modelu, umesto ovog dole sto sam pisao
     def get_queryset(self):
+        # ovo je lista zahteva za pracenje
+        print(self.request.user.requests.all())
+        return self.request.user.requests.all()
+
+
+class FollowersListView(generics.ListAPIView):
+    # ovo je view samo za ulogovanog korisnika, treba napraviti isti ovakav view samo za usera koji se trazi (iz url-a)
+    permission_classes = (IsAuthenticated,)
+    serializer_class = FollowersSerializer
+
+    #  koristiti metode tj querysetove koji su napisani u user modelu, umesto ovog dole sto sam pisao
+    def get_queryset(self):
         # ovo je lista usera koji prate mene (tj usera koji je pozvao ovo)
-        print(self.request.user.followed_by.all())
+        # get the user_id from the URL parameter, if provided
+        user = self.kwargs.get('user_id', None)
+        print(user)
+        if user:
+            return get_object_or_404(User, id=user).followers.all()
+        else:
+            return self.request.user.followers.all()
+
+
+class FollowingListView(generics.ListAPIView):
+    # ovo je view samo za ulogovanog korisnika, treba napraviti isti ovakav view samo za usera koji se trazi (iz url-a)
+    permission_classes = (IsAuthenticated,)
+    serializer_class = FollowersSerializer
+
+    #  koristiti metode tj querysetove koji su napisani u user modelu, umesto ovog dole sto sam pisao
+    def get_queryset(self):
+        # ovo je lista usera koji prate mene (tj usera koji je pozvao ovo)
+        # print(self.request.user.followed_by.all())
         # ovo je lista usera koje ja pratim
         print(self.request.user.follows.all())
 
         # ovo je lista zahteva za pracenje
-        print(self.request.user.requests.all())
-        return self.request.user.requests.all()
+        # print(self.request.user.requests.all())
+        return self.request.user.follows.all()

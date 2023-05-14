@@ -46,6 +46,14 @@ urlpatterns = [
     path('follow-request-action/<int:action>/<int:follow_request_id>/',
          views_profiles.FollowRequestActionView.as_view(), name='follow-request-action'),
 
-    path('follow-list/',
-         views_profiles.FollowRequestListView.as_view(), name='follow-list'),
+    # followers lists
+    path('follow-request-list/',
+         views_profiles.FollowRequestListView.as_view(), name='follow-request-list'),
+    # Followers list for logged user and for user
+    path('followers-list/<int:user_id>/',
+         views_profiles.FollowersListView.as_view(), name='followers-list'),
+    path('followers-list/',
+         views_profiles.FollowersListView.as_view(), name='followers-list'),
+    path('following-list/',
+         views_profiles.FollowingListView.as_view(), name='following-list'),
 ]

@@ -181,3 +181,9 @@ class FollowRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = FollowRequest
         fields = '__all__'
+
+
+class FollowersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'

@@ -4,9 +4,10 @@ from typing import List, Tuple
 
 class FollowRequest(models.Model):
 
-    requester = models.ForeignKey('User', on_delete=models.CASCADE)
+    requester = models.ForeignKey(
+        'User', on_delete=models.CASCADE, to_field="email")
     to_follow = models.ForeignKey(
-        'User', on_delete=models.CASCADE, related_name='requests'
+        'User', on_delete=models.CASCADE, related_name='requests', to_field="email"
     )
 
     def accept(self) -> None:

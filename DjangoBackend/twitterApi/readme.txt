@@ -127,11 +127,16 @@ za uraditi
 
 05.05 
 - prelistati da li moze da se krene sa front delom za zapracivanje usera
+- zapracivanje usera na frontu:
+
+        
 - izlistavanje home feeda na osnovu ljudi koji te prate itd itd (ovo mozda ostaviti za kasnije kad se bude moglo testirati na frontu)
 - krenuti sa izradom front dela za zapracivanje usera
         - razlozeno na sitnije:
 
-
+14.05
+- odraditi zapracivanje usera na frontu ( follow User metoda )
+- ispisati ovde koji su jos slucajevi u pitanju (request follow itd itd)
 
 
 - https://mentix02.medium.com/writing-instagram-in-python-generating-feeds-5bd8399bded9

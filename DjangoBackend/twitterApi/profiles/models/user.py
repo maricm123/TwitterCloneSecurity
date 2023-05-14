@@ -81,7 +81,7 @@ class User(
 
     def unfollow(self, user: get_user_model) -> None:
         """ Helper function to remove a user from this users following list. """
-        self._follows.remove(user)
+        self.follows.remove(user)
 
     def follow(self, user: get_user_model) -> None:
         """ Helper function to add user to a follower list. """
@@ -104,6 +104,6 @@ class User(
         return self.follows.all()
 
     @property
-    def followers(self) -> models.QuerySet:
+    def followers(self):
         """ Returns a QuerySet of Users following this user. """
         return self.followed_by.all()

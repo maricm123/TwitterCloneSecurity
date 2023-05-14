@@ -4,8 +4,7 @@
       <div class="column is-12">
         <h1 class="title">User Profile - {{email}}</h1>
         <button class="button" @click="editUser">Edit profile</button>
-      </div>
-      <div class="column is full">
+        <button @click="logout()" class="button is-danger">Log out</button>
         <button class="button is-light">
           <router-link to="/dashboard/add-tweet">Add your tweet</router-link>
         </button>
@@ -35,9 +34,29 @@
           <router-link :to="{ name: 'TweetDetail', params: { id: tweet.id }}">Details</router-link>
         </button>
       </div>
-
-      <div class="column is-12">
-        <button @click="logout()" class="button is-danger">Log out</button>
+    </div>
+    <div class="container">
+      <div class="columns">
+        <div class="column">
+          <h2 class="title is-4">Followers:</h2>
+          <ul class="list is-hoverable">
+            <li
+              v-for="follower in followers"
+              :key="follower.id"
+              class="list-item"
+            >{{ follower.email }}</li>
+          </ul>
+        </div>
+        <div class="column">
+          <h2 class="title is-4">Following:</h2>
+          <ul class="list is-hoverable">
+            <li
+              v-for="following in followingList"
+              :key="following.id"
+              class="list-item"
+            >{{ following.email }}</li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -51,7 +70,9 @@ export default {
     return {
       tweets: [],
       currentUser: null,
-      email: null
+      email: null,
+      followers: [],
+      followingList: []
     };
   },
   created() {
@@ -61,6 +82,7 @@ export default {
       this.email = currentUser.email;
       this.privacy = currentUser.account_status;
     });
+    this.getFollowers();
   },
   methods: {
     async logout() {
@@ -101,6 +123,24 @@ export default {
       this.$router.push(
         `/dashboard/my-user-profile/edit/${this.currentUser.id}/`
       );
+    },
+    async getFollowers() {
+      await axios
+        .get("/api/following-list/", {
+          headers: { Authorization: `Bearer ${this.$store.state.token}` }
+        })
+        .then(response => {
+          console.log(response.data);
+          this.followingList = response.data;
+        });
+      await axios
+        .get("/api/followers-list/", {
+          headers: { Authorization: `Bearer ${this.$store.state.token}` }
+        })
+        .then(response => {
+          console.log(response.data);
+          this.followers = response.data;
+        });
     }
   },
 
