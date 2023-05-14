@@ -130,7 +130,6 @@ export default {
           headers: { Authorization: `Bearer ${this.$store.state.token}` }
         })
         .then(response => {
-          console.log(response.data);
           this.followingList = response.data;
         });
       await axios
@@ -138,7 +137,6 @@ export default {
           headers: { Authorization: `Bearer ${this.$store.state.token}` }
         })
         .then(response => {
-          console.log(response.data);
           this.followers = response.data;
         });
     }

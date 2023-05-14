@@ -4,7 +4,16 @@
       <div class="column is-12">
         <h1 class="title">User Profile - {{user.email}}</h1>
         <!-- ovde ide v-if ako currentUser prati ovog usera onda ide button za unffollow -->
-        <button class="button is-black" style="font-color: white" @click="followUser">Follow user</button>
+        <button
+          class="button is-black"
+          style="font-color: white"
+          @click="followUser"
+          :class="{ 'requested': followStatus === 'requested', 'following': followStatus === 'following' }"
+        >
+          <span v-if="followStatus === 'not-following'">Follow User</span>
+          <span v-else-if="followStatus === 'requested'">Requested</span>
+          <span v-else-if="followStatus === 'following'">Following</span>
+        </button>
         <!-- <button class="button is-black" style="font-color: white">Unfollow user</button> -->
       </div>
       <!-- ovde u if dodati jos ako currentUser prati usera kojem smo na profilu onda moze da vidi ovo -->
@@ -33,6 +42,31 @@
             <router-link :to="{ name: 'TweetDetail', params: { id: tweet.id }}">Details</router-link>
           </button>
         </div>
+        <br />
+        <div class="container">
+          <div class="columns">
+            <div class="column">
+              <h2 class="title is-4">Followers:</h2>
+              <ul class="list is-hoverable">
+                <li
+                  v-for="follower in followers"
+                  :key="follower.id"
+                  class="list-item"
+                >{{ follower.email }}</li>
+              </ul>
+            </div>
+            <div class="column">
+              <h2 class="title is-4">Following:</h2>
+              <ul class="list is-hoverable">
+                <li
+                  v-for="following in followingList"
+                  :key="following.id"
+                  class="list-item"
+                >{{ following.email }}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -40,16 +74,37 @@
 
 <script>
 import axios from "axios";
+import { toast } from "bulma-toast";
+
 export default {
   name: "UserProfile",
   data() {
     return {
+      currentUser: null,
       tweets: [],
-      user: {}
+      user: {},
+      followers: [],
+      followingList: [],
+      followStatus: "not-following", // or 'requested' or 'following',
+      userID: null,
+      follows: []
     };
   },
   created() {
+    this.$store.dispatch("getCurrentUser").then(currentUser => {
+      // Do something with the current user data
+      this.currentUser = currentUser;
+      this.email = currentUser.email;
+      this.privacy = currentUser.account_status;
+      this.follows = currentUser.follows;
+      console.log(this.follows);
+    });
     this.getUser();
+    this.getFollowers();
+
+    // ovaj ceo created poslati na chatOpen da vidi sta nije uredu i zasto ne vidim this.follows ovde
+    console.log(this.follows);
+    this.userID = this.$route.params.id;
   },
   methods: {
     async getUserTweets() {
@@ -77,7 +132,66 @@ export default {
     },
     async followUser() {
       this.$store.commit("setIsLoading", true);
+      const tweet = {
+        to_follow_id: this.userID
+      };
+      await axios
+        .post(`/api/follow-user/${this.userID}/`, tweet, {
+          headers: { Authorization: `Bearer ${this.$store.state.token}` }
+        })
+        .then(response => {
+          if (response.data.detail == "requested") {
+            this.followStatus = "requested";
+            console.log("PRIVATE PROFIL");
+            toast({
+              message: "You requested to follow this user",
+              type: "is-success",
+              dismissible: true,
+              pauseOnHover: true,
+              duration: 2000,
+              position: "bottom-right"
+            });
+          } else {
+            this.followStatus = "following";
+
+            console.log("OPENED PROFILE");
+            toast({
+              message: "You now following this user",
+              type: "is-success",
+              dismissible: true,
+              pauseOnHover: true,
+              duration: 2000,
+              position: "bottom-right"
+            });
+          }
+          this.$router.push(`/dashboard/user-profile/${this.userID}/`);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      this.$store.commit("setIsLoading", false);
+    },
+    //
+    //
+    //
+    //
+    //
+    async getFollowers() {
       const userID = this.$route.params.id;
+      await axios
+        .get(`/api/following-list/${userID}/`, {
+          headers: { Authorization: `Bearer ${this.$store.state.token}` }
+        })
+        .then(response => {
+          this.followingList = response.data;
+        });
+      await axios
+        .get(`/api/followers-list/${userID}/`, {
+          headers: { Authorization: `Bearer ${this.$store.state.token}` }
+        })
+        .then(response => {
+          this.followers = response.data;
+        });
     }
   },
 

@@ -40,9 +40,10 @@ urlpatterns = [
          views_tweets.LikeTweetView.as_view(), name='like_tweet'),
 
 
-    # following
+    # follow user
     path('follow-user/<int:pk>/',
          views_profiles.FollowUserAPIView.as_view(), name='follow-user'),
+    # accept or reject follow ?
     path('follow-request-action/<int:action>/<int:follow_request_id>/',
          views_profiles.FollowRequestActionView.as_view(), name='follow-request-action'),
 
@@ -52,6 +53,8 @@ urlpatterns = [
     # Followers list for logged user and for user
     path('followers-list/<int:user_id>/',
          views_profiles.FollowersListView.as_view(), name='followers-list'),
+    path('following-list/<int:user_id>/',
+         views_profiles.FollowingListView.as_view(), name='following-list'),
     path('followers-list/',
          views_profiles.FollowersListView.as_view(), name='followers-list'),
     path('following-list/',

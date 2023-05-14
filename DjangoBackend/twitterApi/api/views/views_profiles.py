@@ -168,9 +168,13 @@ class FollowUserAPIView(APIView):
             )
 
         user = get_object_or_404(User, id=to_follow_id)
-
-        self.request.user.follow(user)
-        return Response({'detail': 'requested'})
+        print(user)
+        if user.account_status == "PRIVATE":
+            self.request.user.follow(user)
+            return Response({'detail': 'requested'})
+        else:
+            self.request.user.follow(user)
+            return Response({'detail': 'followed'})
 
 
 class FollowRequestActionView(APIView):
@@ -208,6 +212,14 @@ class FollowRequestActionView(APIView):
             follow_request.reject()
 
         return Response(resp)
+
+# /////////////////////////////////////////////////////////////
+#
+#
+#
+#
+#
+# LISTE USERA KOJE PRATIMO KOJI NAS PRATE I REQUEST ZA PRACENJE
 
 
 class FollowRequestListView(generics.ListAPIView):

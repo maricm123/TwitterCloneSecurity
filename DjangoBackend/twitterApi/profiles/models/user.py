@@ -94,7 +94,6 @@ class User(
             print("PRIVATE")
             FollowRequest.objects.create(requester=self, to_follow=user)
         elif user.account_status == 'OPEN':
-            # print(user)
             print("OPENNNN")
             self.follows.add(user)
 

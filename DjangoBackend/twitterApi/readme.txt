@@ -135,7 +135,19 @@ za uraditi
         - razlozeno na sitnije:
 
 14.05
-- odraditi zapracivanje usera na frontu ( follow User metoda )
+- odraditi zapracivanje usera na frontu ( follow User metoda ) - DONE
+- odraditi dynamic za follow user button, znaci staviti requested ako se ceka odgovor
+ili following ako smo ga zapratili, promeniti boje buttona)
+Ovde sam stao, moram proveriti da li se user nalazi u listi usera koji ga vec prate ( mozda iz currentUsera videti da li vec prati
+ovog usera kojeg zeli da zaprati ???????)
+OVDE SAM STAO !
+
+
+
+- odraditi prihvatanje ili odbijanje zahteva za pracenje, na frontu
+
+- videti ove viewe za followere itd da li su napravljeni i za ulogovanog i za usera kom gledamo profil
+
 - ispisati ovde koji su jos slucajevi u pitanju (request follow itd itd)
 
 
