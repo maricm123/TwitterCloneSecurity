@@ -137,18 +137,32 @@ za uraditi
 14.05
 - odraditi zapracivanje usera na frontu ( follow User metoda ) - DONE
 - odraditi dynamic za follow user button, znaci staviti requested ako se ceka odgovor
-ili following ako smo ga zapratili, promeniti boje buttona)
+ili following ako smo ga zapratili, promeniti boje buttona) - DONE
 Ovde sam stao, moram proveriti da li se user nalazi u listi usera koji ga vec prate ( mozda iz currentUsera videti da li vec prati
-ovog usera kojeg zeli da zaprati ???????)
-OVDE SAM STAO !
+ovog usera kojeg zeli da zaprati ???????) - DONE
+OVDE SAM STAO ! - DONE
+
+
++ stao sam da trebam da razradim casove u UserProfile, znaci pogledati da li je requeseted taj profil
+(znaci u profilu usera koristim servis da izvadim follow request, i na osnovu toga vidim da li ima request za ovog usera iz currentUsera)
+                - force atribut videti gde prosledjivati jer na osnovu njega cemo znati da li dolazi request accepted u follow metodu
+                kod usera ili dolazi u tu metodu sa vec otkljucanim nalogom - DONE
+
+
++ u MyUserProfile namestiti da moze da se prihvati ili odbije zahtev za pracenje (saljem 1 ili 2, pogledati 
+u serializeru) - znaci pored liste follow request staviti accept i reject
+- DONE
+
+
+19.05
+- pogledati ostale casove i slucajeve i popraviit bugove
+- procitati specifikaciju i videti da li nesto fali
+- urediti malo dizajn i podatke koji se trebaju dovesti
+
+- procitati specifikaciju bezbednosti i videti sta se treba uraditi da se unapredi
 
 
 
-- odraditi prihvatanje ili odbijanje zahteva za pracenje, na frontu
-
-- videti ove viewe za followere itd da li su napravljeni i za ulogovanog i za usera kom gledamo profil
-
-- ispisati ovde koji su jos slucajevi u pitanju (request follow itd itd)
 
 
 - https://mentix02.medium.com/writing-instagram-in-python-generating-feeds-5bd8399bded9

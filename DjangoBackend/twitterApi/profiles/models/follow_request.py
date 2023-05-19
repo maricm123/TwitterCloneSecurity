@@ -5,7 +5,7 @@ from typing import List, Tuple
 class FollowRequest(models.Model):
 
     requester = models.ForeignKey(
-        'User', on_delete=models.CASCADE, to_field="email")
+        'User', on_delete=models.CASCADE, related_name='requester', to_field="email")
     to_follow = models.ForeignKey(
         'User', on_delete=models.CASCADE, related_name='requests', to_field="email"
     )
@@ -17,8 +17,8 @@ class FollowRequest(models.Model):
     def reject(self) -> None:
         self.delete()
 
-    def __str__(self) -> str:
-        return f'{self.requester} -> {self.to_follow}'
+    def __str__(self):
+        return self.to_follow.email
 
     class Meta:
         indexes: List[models.Index] = [

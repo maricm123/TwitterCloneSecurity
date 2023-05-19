@@ -33,7 +33,18 @@
             {{ tweet.user.email }}
           </p>
           <br />
-          <button class="button is-submit" @click="userProfile">User profile</button>
+          <div>
+            <button
+              v-if="tweet.user.id == currentUser.id"
+              class="button is-submit"
+              @click="myUserProfile"
+            >User profile</button>
+            <button
+              v-if="tweet.user.id !== currentUser.id"
+              class="button is-submit"
+              @click="userProfile"
+            >User profile</button>
+          </div>
         </div>
       </div>
 
@@ -74,6 +85,7 @@ export default {
   data() {
     return {
       tweet: {
+        id: null,
         user: {}
       },
       currentUser: null,
@@ -82,7 +94,7 @@ export default {
     };
   },
   async created() {
-    this.$store.dispatch("getCurrentUser").then(currentUser => {
+    await this.$store.dispatch("getCurrentUser").then(currentUser => {
       // Do something with the current user data
       this.currentUser = currentUser;
     });
@@ -90,7 +102,7 @@ export default {
     //   mounted() {
     //   this.$store.dispatch("getCurrentUser");
     // }
-    this.getTweet();
+    await this.getTweet();
   },
   mounted() {},
   methods: {
@@ -173,12 +185,17 @@ export default {
     },
     // ova funkcionalnost i delete verovatno ne treba.
     async updateTweet() {
+      const tweetID = this.$route.params.id;
       // Navigate to the tweet update page
-      this.$router.push(`/dashboard/tweets/${this.tweet.id}/update/`);
+      this.$router.push(`/dashboard/tweets/${tweetID}/update/`);
     },
     async userProfile() {
       // Navigate to the user profile page
       this.$router.push(`/dashboard/user-profile/${this.tweet.user.id}`);
+    },
+    async myUserProfile() {
+      // Navigate to the user profile page
+      this.$router.push("/dashboard/my-user-profile/");
     }
   }
 };

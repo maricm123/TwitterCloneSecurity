@@ -34,7 +34,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'username', 'password', 'email',
                   'user_type', 'account_status', 'follows',)
-        read_only_fields = ('id', 'user_type',)
+        read_only_fields = ('id', 'user_type', 'follows',)
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)

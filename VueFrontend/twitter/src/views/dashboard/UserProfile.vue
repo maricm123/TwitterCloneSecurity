@@ -6,7 +6,6 @@
         <!-- ovde ide v-if ako currentUser prati ovog usera onda ide button za unffollow -->
         <button
           class="button is-black"
-          style="font-color: white"
           @click="followUser"
           :class="{ 'requested': followStatus === 'requested', 'following': followStatus === 'following' }"
         >
@@ -17,7 +16,7 @@
         <!-- <button class="button is-black" style="font-color: white">Unfollow user</button> -->
       </div>
       <!-- ovde u if dodati jos ako currentUser prati usera kojem smo na profilu onda moze da vidi ovo -->
-      <div v-if="user.account_status == 'OPEN'">
+      <div v-if="user.account_status == 'OPEN' || followStatus == 'following'">
         <div class="card" v-for="tweet in tweets" v-bind:key="tweet.id">
           <div class="card-content">
             <div class="media">
@@ -85,28 +84,61 @@ export default {
       user: {},
       followers: [],
       followingList: [],
+      followRequest: [],
       followStatus: "not-following", // or 'requested' or 'following',
       userID: null,
-      follows: []
+      follows: [],
+      email: "",
+      privacy: ""
     };
   },
-  created() {
-    this.$store.dispatch("getCurrentUser").then(currentUser => {
+  async mounted() {
+    await this.$store.dispatch("getCurrentUser").then(currentUser => {
       // Do something with the current user data
       this.currentUser = currentUser;
-      this.email = currentUser.email;
-      this.privacy = currentUser.account_status;
-      this.follows = currentUser.follows;
-      console.log(this.follows);
     });
-    this.getUser();
-    this.getFollowers();
 
-    // ovaj ceo created poslati na chatOpen da vidi sta nije uredu i zasto ne vidim this.follows ovde
-    console.log(this.follows);
     this.userID = this.$route.params.id;
   },
+
+  async created() {
+    await this.getUser();
+    await this.getFollowers();
+    await this.checkFollow();
+  },
   methods: {
+    async checkFollow() {
+      const userID = this.$route.params.id;
+      const userIdNumber = parseInt(userID);
+      await axios
+        .get("/api/do-i-request-list/", {
+          headers: { Authorization: `Bearer ${this.$store.state.token}` }
+        })
+        .then(response => {
+          this.followRequest = response.data;
+        });
+      const toFollowArray = [];
+      for (const obj of this.followRequest) {
+        toFollowArray.push(obj.to_follow);
+      }
+
+      if (this.currentUser.follows.includes(userIdNumber)) {
+        console.log("CURRENT USER PRATI OVOG USERA");
+        this.followStatus = "following";
+        this.getUserTweets();
+      } else if (toFollowArray.includes(this.user.email)) {
+        console.log("CURRENT USER REQUEST TO FOLLOW THISS USER");
+
+        this.followStatus = "requested";
+        // ovde proveravamo da li mu je poslat zaahtev za pracenje
+      } else {
+        console.log("current user NEEEEE prati ovog usera");
+        this.followStatus = "not-following";
+        if (this.user.account_status == "OPEN") {
+          this.getUserTweets();
+        }
+      }
+    },
     async getUserTweets() {
       const userID = this.$route.params.id;
       await axios
@@ -142,6 +174,7 @@ export default {
         .then(response => {
           if (response.data.detail == "requested") {
             this.followStatus = "requested";
+            console.log(response.data.detail);
             console.log("PRIVATE PROFIL");
             toast({
               message: "You requested to follow this user",
@@ -193,10 +226,6 @@ export default {
           this.followers = response.data;
         });
     }
-  },
-
-  mounted() {
-    this.getUserTweets();
   }
 };
 </script>

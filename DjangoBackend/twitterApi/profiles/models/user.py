@@ -83,18 +83,19 @@ class User(
         """ Helper function to remove a user from this users following list. """
         self.follows.remove(user)
 
-    def follow(self, user: get_user_model) -> None:
+    def follow(self, user: get_user_model, force) -> None:
         """ Helper function to add user to a follower list. """
 
         if user.id == self.id:
             # ako user sam sebe zapracuje ne radi nista
             return
-
-        if user.account_status == 'PRIVATE':
+        # ovde ce mozda drugacije trebati napisati ove casove
+        if user.account_status == 'PRIVATE' and force == False:
             print("PRIVATE")
-            FollowRequest.objects.create(requester=self, to_follow=user)
-        elif user.account_status == 'OPEN':
-            print("OPENNNN")
+            FollowRequest.objects.create(
+                requester=self, to_follow=user)
+        elif user.account_status == 'OPEN' or force == True:
+            print("OPEN")
             self.follows.add(user)
 
     @property

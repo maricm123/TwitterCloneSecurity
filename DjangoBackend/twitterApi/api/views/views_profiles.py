@@ -168,12 +168,11 @@ class FollowUserAPIView(APIView):
             )
 
         user = get_object_or_404(User, id=to_follow_id)
-        print(user)
         if user.account_status == "PRIVATE":
-            self.request.user.follow(user)
+            self.request.user.follow(user, force=False)
             return Response({'detail': 'requested'})
         else:
-            self.request.user.follow(user)
+            self.request.user.follow(user, force=True)
             return Response({'detail': 'followed'})
 
 
@@ -189,9 +188,7 @@ class FollowRequestActionView(APIView):
         try:
             # action is 1 or 2 from frontend (1 is accepted request, 2 is rejected request)
             action = self.kwargs.get('action')
-            print(action)
             follow_request_id = self.kwargs.get('follow_request_id')
-            print(follow_request_id)
         except KeyError as field:
             return Response(
                 {'error': f'{str(field)} not provided.'},
@@ -204,11 +201,11 @@ class FollowRequestActionView(APIView):
         resp = {'detail': 'rejected'}
 
         if action == 1:
-            print("!!!!!!")
+            print("ACCEPT")
             resp['detail'] = 'accepted'
             follow_request.accept()
         else:
-            print("ELSEEEEE")
+            print("REJECT")
             follow_request.reject()
 
         return Response(resp)
@@ -229,9 +226,23 @@ class FollowRequestListView(generics.ListAPIView):
 
     #  koristiti metode tj querysetove koji su napisani u user modelu, umesto ovog dole sto sam pisao
     def get_queryset(self):
+        print(self.request.user.requests.all(), "REQUESTS")
         # ovo je lista zahteva za pracenje
-        print(self.request.user.requests.all())
         return self.request.user.requests.all()
+
+# Da li ja hocu da pratim nekoga? da li requestujem da pratim nekog
+
+
+class DoIRequestToFollowListView(generics.ListAPIView):
+    # ovo je view samo za ulogovanog korisnika, treba napraviti isti ovakav view samo za usera koji se trazi (iz url-a)
+    permission_classes = (IsAuthenticated,)
+    serializer_class = FollowRequestSerializer
+
+    #  koristiti metode tj querysetove koji su napisani u user modelu, umesto ovog dole sto sam pisao
+    def get_queryset(self):
+        print(self.request.user.requester.all(), "REQUESTER")
+        # ovo je lista zahteva za pracenje
+        return self.request.user.requester.all()
 
 
 class FollowersListView(generics.ListAPIView):
@@ -244,7 +255,6 @@ class FollowersListView(generics.ListAPIView):
         # ovo je lista usera koji prate mene (tj usera koji je pozvao ovo)
         # get the user_id from the URL parameter, if provided
         user = self.kwargs.get('user_id', None)
-        print(user)
         if user:
             return get_object_or_404(User, id=user).followers.all()
         else:
@@ -261,7 +271,6 @@ class FollowingListView(generics.ListAPIView):
         # ovo je lista usera koji prate mene (tj usera koji je pozvao ovo)
         # print(self.request.user.followed_by.all())
         # ovo je lista usera koje ja pratim
-        print(self.request.user.follows.all())
 
         # ovo je lista zahteva za pracenje
         # print(self.request.user.requests.all())

@@ -57,11 +57,21 @@
             >{{ following.email }}</li>
           </ul>
         </div>
+        <div class="column" v-if="this.privacy == 'PRIVATE'">
+          <h2 class="title is-4">Follow Request:</h2>
+          <ul class="list is-hoverable">
+            <div v-for="followRequests in followRequest" :key="followRequests.id">
+              <li class="list-item">{{ followRequests.requester }}</li>
+              <li class="list-item">{{ followRequests.id }}</li>
+              <button class="button is-info" @click="acceptFollow(followRequests.id)">Accept</button>
+              <button class="button is-danger" @click="rejectFollow(followRequests.id)">Reject</button>
+            </div>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
 </template>
-
 <script>
 import axios from "axios";
 export default {
@@ -72,7 +82,8 @@ export default {
       currentUser: null,
       email: null,
       followers: [],
-      followingList: []
+      followingList: [],
+      followRequest: []
     };
   },
   created() {
@@ -138,6 +149,43 @@ export default {
         })
         .then(response => {
           this.followers = response.data;
+        });
+      await axios
+        .get("/api/follow-request-list/", {
+          headers: { Authorization: `Bearer ${this.$store.state.token}` }
+        })
+        .then(response => {
+          this.followRequest = response.data;
+        });
+    },
+    async acceptFollow(follow_request_id) {
+      console.log(follow_request_id);
+      console.log("accept");
+      await axios
+        .post(
+          `/api/follow-request-action/1/${follow_request_id}/`,
+          {},
+          {
+            headers: { Authorization: `Bearer ${this.$store.state.token}` }
+          }
+        )
+        .then(response => {
+          console.log(response.data);
+        });
+    },
+    async rejectFollow(follow_request_id) {
+      console.log("reject");
+      console.log(follow_request_id);
+      await axios
+        .post(
+          `/api/follow-request-action/2/${follow_request_id}/`,
+          {},
+          {
+            headers: { Authorization: `Bearer ${this.$store.state.token}` }
+          }
+        )
+        .then(response => {
+          console.log(response.data);
         });
     }
   },

@@ -36,9 +36,6 @@ const routes = [
     path: "/dashboard",
     name: "dashboard",
     component: Dashboard,
-    // meta: {
-    //   requireLogin: true
-    // }
   },
   {
     path: "/dashboard/my-user-profile",
@@ -52,9 +49,6 @@ const routes = [
     path: '/dashboard/tweet/:id',
     name: 'TweetDetail',
     component: TweetDetail,
-    // meta: {
-    //   requireLogin: true
-    // }
   },
   {
     path: '/dashboard/add-tweet/',
