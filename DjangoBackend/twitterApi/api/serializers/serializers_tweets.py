@@ -13,4 +13,18 @@ class TweetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tweet
-        fields = ['id', 'text', 'image', 'created_at', 'liked_by', 'user']
+        fields = ['id', 'text', 'image', 'created_at',
+                  'liked_by', 'user', 'original_tweet', 'is_retweet',]
+
+
+# class RetweetTweetSerializer(serializers.ModelSerializer):
+#     user = UserSerializer(required=False)
+#     liked_by = serializers.SerializerMethodField()
+
+#     def get_liked_by(self, tweet):
+#         return [user.username for user in tweet.liked_by.all()]
+
+#     class Meta:
+#         model = Tweet
+#         fields = ['id', 'text', 'image', 'created_at',
+#                   'liked_by', 'user', ]

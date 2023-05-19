@@ -62,7 +62,6 @@
           <ul class="list is-hoverable">
             <div v-for="followRequests in followRequest" :key="followRequests.id">
               <li class="list-item">{{ followRequests.requester }}</li>
-              <li class="list-item">{{ followRequests.id }}</li>
               <button class="button is-info" @click="acceptFollow(followRequests.id)">Accept</button>
               <button class="button is-danger" @click="rejectFollow(followRequests.id)">Reject</button>
             </div>

@@ -48,11 +48,9 @@ class UserLoginView(TokenObtainPairView, JWTAuthentication):
         user_type = serializer.validated_data['user_type']
 
         if user_type == 'business':
-            # print(user_type)
             user = User.objects.get(email=request.data["email"])
             user_serializer = UserSerializer(user)
         elif user_type == 'default':
-            # print(user_type)
             user = User.objects.get(email=request.data["email"])
             user_serializer = UserSerializer(user)
         else:
@@ -92,9 +90,6 @@ class LogoutView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-# DOdati to da samo user koji je ulogovan moze da vidi svoj profil
-# dodati ako treba jos neka polja u DefaultUserSerializer
-# Napraviti View koji ce da dobija i bussines i default usere ili posebno ili zajedno !!
 class MyProfileView(generics.RetrieveUpdateAPIView):
     permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = User.objects.all()
@@ -274,4 +269,8 @@ class FollowingListView(generics.ListAPIView):
 
         # ovo je lista zahteva za pracenje
         # print(self.request.user.requests.all())
-        return self.request.user.follows.all()
+        user = self.kwargs.get('user_id', None)
+        if user:
+            return get_object_or_404(User, id=user).follows.all()
+        else:
+            return self.request.user.follows.all()

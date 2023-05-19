@@ -12,6 +12,11 @@ from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 
+"""
+Home feed treba da sadrži listu tweet-ova tog korisnika
+i svih ostalih korisnika koje taj profil prati.
+"""
+
 
 class TweetList(generics.ListCreateAPIView):
     # Dashboard - svi tvitovi i kreiranje tvita
@@ -23,6 +28,17 @@ class TweetList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class TweetListDashboard(generics.ListAPIView):
+    serializer_class = TweetSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        user = self.request.user
+        followers = user.following
+        follower_ids = list(followers.values_list('id', flat=True)) + [user.id]
+        return Tweet.objects.filter(user__in=follower_ids).order_by('-created_at')
 
 
 class TweetListByMe(generics.ListAPIView):
@@ -99,5 +115,37 @@ class LikeTweetView(generics.UpdateAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class LikedByUsersView(generics.RetrieveAPIView):
-    pass
+# Retweet (običan i biznis korisnik)
+# Korisnik može da retweet-uje svaki tweet kom može da pristupi. Kada to
+# odradi, retweet se tretira kao i svaki drugi tweet tog korisnika, ali sa naznakom
+# da je retweet. Mora se navesti ko je korisnik koji ga je originalno objavio.
+# Ukoliko je profil koji je originalno objavio tweet privatan i korisnik kom se
+# prikazuje retweet ne prati taj profil, potrebno je sakriti sadržaj retweet-a, ali ne
+# i ime osobe koja ga je objavila.
+class RetweetView(generics.ListCreateAPIView):
+    serializer_class = TweetSerializer
+    queryset = Tweet.objects.all()
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def post(self, request, *args, **kwargs):
+        user = self.request.user
+        tweet_id = self.kwargs.get("pk")
+        original_tweet = get_object_or_404(Tweet, id=tweet_id)
+
+        # Provera pristupa originalnom tweet-u
+        # if original_tweet.user.account_status == "PRIVATE" and not user.follows(original_tweet.user):
+        #     # Ako je originalni tweet privatna objava i korisnik ne prati autora, vraćamo zabranu pristupa
+        #     return Response({"detail": "Nemate pristup ovom tweet-u."}, status=status.HTTP_403_FORBIDDEN)
+
+        # Kreiranje retweet-a
+        retweet = Tweet.objects.create(
+            text=original_tweet.text,
+            user=user,
+            original_tweet=original_tweet,
+            is_retweet=True
+        )
+
+        serializer = TweetSerializer(retweet)
+        print(serializer.data)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

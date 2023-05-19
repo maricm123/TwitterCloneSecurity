@@ -6,7 +6,6 @@
           <router-link to="/dashboard/add-tweet">Add your tweet</router-link>
         </button>
         <div class="column is-full">
-          <!-- <h1>Hi {{user.username}}</h1> -->
           <h1 class="title">Tweets</h1>
         </div>
 
@@ -36,6 +35,10 @@
         </div>
         <br />
       </div>
+      <div v-else>
+        You need to sign up to add your tweet.
+        If you already have an account login
+      </div>
     </div>
   </div>
 </template>
@@ -56,7 +59,9 @@ export default {
     async getTweets() {
       this.$store.commit("setIsLoading", true);
       axios
-        .get("/api/tweet/")
+        .get("/api/tweets-dashboard/", {
+          headers: { Authorization: `Bearer ${this.$store.state.token}` }
+        })
         .then(response => {
           this.tweets = response.data;
         })

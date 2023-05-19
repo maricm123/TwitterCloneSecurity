@@ -29,16 +29,15 @@ urlpatterns = [
 
     # tweets
     path('tweet/', views_tweets.TweetList.as_view(), name='tweet'),
+    path('tweets-dashboard/', views_tweets.TweetListDashboard.as_view(),
+         name='tweets-dashboard'),
     path('tweets-by-me/', views_tweets.TweetListByMe.as_view(), name='tweets-by-me'),
     path('tweets-by-user/<int:pk>/', views_tweets.TweetListByUser.as_view(),
          name='tweets-by-user'),
 
-
-
     path('tweet/<int:pk>/', views_tweets.TweetDetail.as_view(), name='tweet-detail'),
     path('tweet/<int:pk>/like/',
          views_tweets.LikeTweetView.as_view(), name='like_tweet'),
-
 
     # follow user
     path('follow-user/<int:pk>/',
@@ -61,4 +60,9 @@ urlpatterns = [
          views_profiles.FollowersListView.as_view(), name='followers-list'),
     path('following-list/',
          views_profiles.FollowingListView.as_view(), name='following-list'),
+
+
+    # Retweet tweet
+    path('retweet/<int:pk>/',
+         views_tweets.RetweetView.as_view(), name='retweet'),
 ]

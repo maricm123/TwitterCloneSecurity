@@ -156,8 +156,25 @@ u serializeru) - znaci pored liste follow request staviti accept i reject
 
 19.05
 - pogledati ostale casove i slucajeve i popraviit bugove
-- procitati specifikaciju i videti da li nesto fali
 - urediti malo dizajn i podatke koji se trebaju dovesti
+
+
+
+- Retweet (običan i biznis korisnik)
+Korisnik može da retweet-uje svaki tweet kom može da pristupi. Kada to
+odradi, retweet se tretira kao i svaki drugi tweet tog korisnika, ali sa naznakom
+da je retweet. Mora se navesti ko je korisnik koji ga je originalno objavio.
+Ukoliko je profil koji je originalno objavio tweet privatan i korisnik kom se
+prikazuje retweet ne prati taj profil, potrebno je sakriti sadržaj retweet-a, ali ne
+i ime osobe koja ga je objavila. - DONE
+-mozda samo probati poboljsati kod u tom viewu za retweet
+
+
+- home feed (tvitovi samo korisnika koje pratim) - DONE
+
+
+
+
 
 - procitati specifikaciju bezbednosti i videti sta se treba uraditi da se unapredi
 
