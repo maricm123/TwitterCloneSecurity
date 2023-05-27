@@ -70,6 +70,8 @@ class User(
     follows = models.ManyToManyField(
         'User', blank=True, related_name='followed_by')
 
+    is_active = models.BooleanField(default=False)
+
     objects = CustomUserManager()
 
     USERNAME_FIELD = "email"  # used as the unique identifier
@@ -91,11 +93,9 @@ class User(
             return
         # ovde ce mozda drugacije trebati napisati ove casove
         if user.account_status == 'PRIVATE' and force == False:
-            print("PRIVATE")
             FollowRequest.objects.create(
                 requester=self, to_follow=user)
         elif user.account_status == 'OPEN' or force == True:
-            print("OPEN")
             self.follows.add(user)
 
     @property

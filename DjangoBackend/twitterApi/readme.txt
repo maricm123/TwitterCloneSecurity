@@ -29,6 +29,8 @@ Mora da prati sve ovo :
 SUPER USER
 mihailomaric001@gmail.com
 mihailo
+mihailomaric@gmail.com
+mihailo
 
 
 
@@ -167,24 +169,38 @@ da je retweet. Mora se navesti ko je korisnik koji ga je originalno objavio.
 Ukoliko je profil koji je originalno objavio tweet privatan i korisnik kom se
 prikazuje retweet ne prati taj profil, potrebno je sakriti sadržaj retweet-a, ali ne
 i ime osobe koja ga je objavila. - DONE
--mozda samo probati poboljsati kod u tom viewu za retweet
-
-
 - home feed (tvitovi samo korisnika koje pratim) - DONE
-
-
-
-
-
 - procitati specifikaciju bezbednosti i videti sta se treba uraditi da se unapredi
 
 
+21.05
+- odratiti retweet na frontu ( ubaciti dugme za retweet ) - DONE
+- ubaciti da korisnik koji pristupa retweetu ne moze da vidi
+ tweet ako ne prati korisnika koji je kreirao taj originalni tweet - DONE
 
+- istraziti sta ide dalje za bezbednost
+        pitati nekog
+        pogledati videe
+        
+- sredjivati dizajn
 
-
-- https://mentix02.medium.com/writing-instagram-in-python-generating-feeds-5bd8399bded9
-OVDE MOGU VIDETI kako izlistati tvitove na osnovu usera koje pratim itd itd ovo mi treba za home feed
 
 - tek posle svega ovoga fokusirati se na izmenu lozinke itd, jer mozda i realno nije vezano za ove ostale
 serailizere i viewe. 
 https://medium.com/django-rest/django-rest-framework-change-password-and-update-profile-1db0c144c0a3?source=publication_recirc-----eb1b53ac6d35----3----------------------------
+
+
+
+
+27.05:
+- Potvrda naloga nakon registracije
+
+- Oporavak lozinke
+
+- Promena lozinke
+
+
+
++++Kontrolisanje pristupa endpoint-ima po RBAC modelu
+        - Napraviti permissione za potrebe u projektu (Za biznisa i za ddefault usera)
+        - Dodati ih u permission_classes u viewvima

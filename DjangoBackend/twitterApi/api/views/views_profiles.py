@@ -5,7 +5,15 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 from profiles.models import BusinessUser, DefaultUser, User
-from ..serializers.serializers_profiles import BusinessUserSerializer, CustomTokenObtainPairSerializer, FollowersSerializer, FollowRequestSerializer, DefaultUserSerializer, UserSerializer, BusinessUserSerializerForUpdate, DefaultUserSerializerForUpdate
+from ..serializers.serializers_profiles import (
+    BusinessUserSerializer,
+    CustomTokenObtainPairSerializer,
+    FollowersSerializer,
+    FollowRequestSerializer,
+    DefaultUserSerializer,
+    UserSerializer,
+    BusinessUserSerializerForUpdate
+)
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
@@ -25,6 +33,29 @@ class DefaultUserRegisterView(generics.CreateAPIView):
     View to handle registration of Default Users.
     """
     serializer_class = DefaultUserSerializer
+
+    # def perform_create(self, serializer):
+    #     # Call the default perform_create() method to handle user registration
+    #     user = serializer.save()
+
+    #     # Generate confirmation token
+    #     token = generate_confirmation_token()
+    #     print(token)
+
+    #     # Create account confirmation
+    #     confirmation = AccountConfirmation.objects.create(
+    #         user=user, token=token)
+    #     print(confirmation)
+
+    #     # Send confirmation email
+    #     # Replace the following code with your email sending logic
+    #     # email_subject = 'Account Confirmation'
+    #     # Include the token in the email
+    #     # email_message = f'Confirmation token: {token}'
+    #     # send_email(user.email, email_subject, email_message)
+
+    #     # Return a response indicating successful registration
+    #     return Response({'message': 'User registered successfully. Please check your email for confirmation.'})
 
 
 class BusinessUserRegisterView(generics.CreateAPIView):
@@ -219,9 +250,7 @@ class FollowRequestListView(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = FollowRequestSerializer
 
-    #  koristiti metode tj querysetove koji su napisani u user modelu, umesto ovog dole sto sam pisao
     def get_queryset(self):
-        print(self.request.user.requests.all(), "REQUESTS")
         # ovo je lista zahteva za pracenje
         return self.request.user.requests.all()
 
@@ -229,26 +258,19 @@ class FollowRequestListView(generics.ListAPIView):
 
 
 class DoIRequestToFollowListView(generics.ListAPIView):
-    # ovo je view samo za ulogovanog korisnika, treba napraviti isti ovakav view samo za usera koji se trazi (iz url-a)
     permission_classes = (IsAuthenticated,)
     serializer_class = FollowRequestSerializer
 
-    #  koristiti metode tj querysetove koji su napisani u user modelu, umesto ovog dole sto sam pisao
     def get_queryset(self):
-        print(self.request.user.requester.all(), "REQUESTER")
         # ovo je lista zahteva za pracenje
         return self.request.user.requester.all()
 
 
 class FollowersListView(generics.ListAPIView):
-    # ovo je view samo za ulogovanog korisnika, treba napraviti isti ovakav view samo za usera koji se trazi (iz url-a)
     permission_classes = (IsAuthenticated,)
     serializer_class = FollowersSerializer
 
-    #  koristiti metode tj querysetove koji su napisani u user modelu, umesto ovog dole sto sam pisao
     def get_queryset(self):
-        # ovo je lista usera koji prate mene (tj usera koji je pozvao ovo)
-        # get the user_id from the URL parameter, if provided
         user = self.kwargs.get('user_id', None)
         if user:
             return get_object_or_404(User, id=user).followers.all()
@@ -257,18 +279,10 @@ class FollowersListView(generics.ListAPIView):
 
 
 class FollowingListView(generics.ListAPIView):
-    # ovo je view samo za ulogovanog korisnika, treba napraviti isti ovakav view samo za usera koji se trazi (iz url-a)
     permission_classes = (IsAuthenticated,)
     serializer_class = FollowersSerializer
 
-    #  koristiti metode tj querysetove koji su napisani u user modelu, umesto ovog dole sto sam pisao
     def get_queryset(self):
-        # ovo je lista usera koji prate mene (tj usera koji je pozvao ovo)
-        # print(self.request.user.followed_by.all())
-        # ovo je lista usera koje ja pratim
-
-        # ovo je lista zahteva za pracenje
-        # print(self.request.user.requests.all())
         user = self.kwargs.get('user_id', None)
         if user:
             return get_object_or_404(User, id=user).follows.all()

@@ -1,22 +1,53 @@
 <template>
   <div class="container">
     <div class="columns is-multiline">
-      <div class="column is-12"></div>
+      <!-- twit je ritvitovan -->
+      <div v-if="tweet.is_retweet">
+        {{currentUser.follows}}
+        {{original_tweet_user}}
+        <div
+          v-if="currentUser.follows.includes(original_tweet_user.id) || currentUser.id == original_tweet_user.id"
+        >
+          <div class="column is-12">
+            <div class="box">
+              <h2 class="subtitle">TweetDetail</h2>
+              <p>This tweet is retweeted from {{original_tweet_user.email}} user</p>
+              <p>
+                <strong>Created at:</strong>
+                {{ tweet.created_at }}
+              </p>
+              <br />
+              <br />
+              <text>
+                <strong>Content:</strong>
+                {{ tweet.text }}
+              </text>
+            </div>
+          </div>
+        </div>
+        <!-- ako ga ne prati, ne vidi nista -->
+        <div v-else></div>
+      </div>
 
-      <div class="column is-6">
-        <div class="box">
-          <h2 class="subtitle">TweetDetail</h2>
+      <div v-else>
+        <div class="column is-12">
+          <div class="box">
+            <h2 class="subtitle">TweetDetail</h2>
 
-          <p>
-            <strong>Created at:</strong>
-            {{ tweet.created_at }}
-          </p>
-          <br />
-          <br />
-          <text>
-            <strong>Content:</strong>
-            {{ tweet.text }}
-          </text>
+            <p>
+              <strong>Created at:</strong>
+              {{ tweet.created_at }}
+            </p>
+            <br />
+            <br />
+            <text>
+              <strong>Content:</strong>
+              {{ tweet.text }}
+            </text>
+          </div>
+        </div>
+        <div v-if="tweet.user.id !== currentUser.id">
+          <button @click="retweet(tweet.id)" class="button is-info">Retweet</button>
         </div>
       </div>
 
@@ -90,7 +121,8 @@ export default {
       },
       currentUser: null,
       liked: false,
-      liked_by: []
+      liked_by: [],
+      original_tweet_user: null
     };
   },
   async created() {
@@ -106,14 +138,26 @@ export default {
   },
   mounted() {},
   methods: {
+    async retweet(original_tweet_id) {
+      await axios
+        .post(
+          `/api/retweet/${original_tweet_id}/`,
+          {},
+          {
+            headers: { Authorization: `Bearer ${this.$store.state.token}` }
+          }
+        )
+        .then(response => {
+          console.log(response.data);
+          this.$router.push("/dashboard/");
+        });
+    },
     async likeTweet() {
       if (
-        // this.tweet.liked_by.includes(this.$store.state.currentUser.username)
         Object.values(this.tweet.liked_by).includes(
           this.$store.state.currentUser.username
         )
       ) {
-        // The current user has liked this tweet
         const tweetID = this.$route.params.id;
         await axios
           .delete(`/api/tweet/${tweetID}/like/`, {
@@ -151,7 +195,6 @@ export default {
           headers: { Authorization: `Bearer ${this.$store.state.token}` }
         })
         .then(response => {
-          console.log(response.data);
           this.$router.push("/dashboard");
         })
         .catch(error => {
@@ -168,6 +211,12 @@ export default {
           this.tweet = response.data;
           this.tweet.user = response.data.user;
           this.liked_by = response.data.liked_by;
+          if (this.tweet.is_retweet) {
+            const original_tweet_id = this.tweet.original_tweet;
+            axios.get(`/api/tweet/${original_tweet_id}`).then(response => {
+              this.original_tweet_user = response.data.user;
+            });
+          }
           if (
             Object.values(response.data.liked_by).includes(
               this.$store.state.currentUser.username
