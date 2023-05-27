@@ -5,6 +5,8 @@ from profiles.models.base_profile import BaseProfile
 from profiles.models.default_user import DefaultUser
 from profiles.models.business_user import BusinessUser
 from profiles.models.follow_request import FollowRequest
+from profiles.models.account_confirmation import AccountConfirmation
+
 
 # Register your models here.
 
@@ -14,3 +16,4 @@ admin.site.register(User)
 admin.site.register(DefaultUser)
 admin.site.register(BusinessUser)
 admin.site.register(FollowRequest)
+admin.site.register(AccountConfirmation)
