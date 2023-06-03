@@ -208,5 +208,11 @@ https://medium.com/django-rest/django-rest-framework-change-password-and-update-
 
 03.06 i 04.06:
 +++Kontrolisanje pristupa endpoint-ima po RBAC modelu
-        - Napraviti permissione za potrebe u projektu (Za biznisa i za ddefault usera)
-        - Dodati ih u permission_classes u viewvima
+        - Napraviti permissione za potrebe u projektu (Za biznisa i za ddefault usera) - DONE
+        - Dodati ih u permission_classes u viewvima - DONE
+
+
+- videti za lozinku (napraviti neki regex na beku ili frontu), zastiti lozinku itd
+
+
+- pogledati sta treba uraditi za poslednji deo projekta

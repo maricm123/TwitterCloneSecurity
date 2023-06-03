@@ -29,21 +29,13 @@ from django.shortcuts import get_object_or_404
 from profiles.models.follow_request import FollowRequest
 from ..utils import generate_confirmation_token, generate_reset_token, generate_uid
 from django.contrib.auth.tokens import default_token_generator
+from ..permissions import BusinessPermission, DefaultPermission
 
 from django.utils.http import urlsafe_base64_decode
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
-
-
-# def generate_confirmation_token(length=32):
-#     """
-#     Generate a random confirmation token of specified length.
-#     """
-#     characters = string.ascii_letters + string.digits
-#     token = ''.join(secrets.choice(characters) for _ in range(length))
-#     return token
 
 
 # {

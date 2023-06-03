@@ -14,7 +14,6 @@
                 placeholder="New Password"
                 required
               />
-              <!-- <input type="email" name="email" class="input" v-model="email" /> -->
             </div>
           </div>
           <div class="field">

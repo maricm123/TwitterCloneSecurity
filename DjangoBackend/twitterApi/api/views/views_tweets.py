@@ -7,6 +7,7 @@ from tweet.models.tweet import Tweet
 from profiles.models.user import User
 from rest_framework.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
+from ..permissions import BusinessPermission, DefaultPermission
 
 
 from rest_framework import generics
@@ -32,7 +33,8 @@ class TweetList(generics.ListCreateAPIView):
 
 class TweetListDashboard(generics.ListAPIView):
     serializer_class = TweetSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (
+        IsAuthenticated,)
 
     def get_queryset(self):
         user = self.request.user
