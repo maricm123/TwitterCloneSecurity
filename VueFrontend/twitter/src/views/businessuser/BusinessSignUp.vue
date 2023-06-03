@@ -74,6 +74,7 @@ export default {
       password2: "",
       companyName: "",
       website: "",
+      user_type: "business",
       errors: []
     };
   },
@@ -95,6 +96,7 @@ export default {
         const formData = {
           email: this.email,
           username: this.username,
+          user_type: this.user_type,
           password: this.password,
           company_name: this.companyName,
           website: this.website

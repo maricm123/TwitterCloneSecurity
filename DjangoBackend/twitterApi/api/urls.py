@@ -65,4 +65,8 @@ urlpatterns = [
     # Retweet tweet
     path('retweet/<int:pk>/',
          views_tweets.RetweetView.as_view(), name='retweet'),
+
+    # Account confirmation
+    path('confirmation/',
+         views_profiles.AccountConfirmationVerifyView.as_view(), name='confirmation'),
 ]

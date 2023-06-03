@@ -90,6 +90,7 @@ export default {
       address: "",
       first_name: "",
       last_name: "",
+      user_type: "default",
       errors: []
     };
   },
@@ -115,7 +116,8 @@ export default {
           first_name: this.first_name,
           last_name: this.last_name,
           age: this.age,
-          address: this.address
+          address: this.address,
+          user_type: this.user_type
         };
         await axios
           .post("http://127.0.0.1:8000/api/default-user/register/", formData)

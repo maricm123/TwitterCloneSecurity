@@ -193,7 +193,7 @@ https://medium.com/django-rest/django-rest-framework-change-password-and-update-
 
 
 27.05:
-- Potvrda naloga nakon registracije
+- Potvrda naloga nakon registracije - uradio modele, radi se view
 
 - Oporavak lozinke
 

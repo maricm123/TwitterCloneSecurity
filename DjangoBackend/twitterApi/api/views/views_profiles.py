@@ -1,10 +1,13 @@
 
+from profiles.models.account_confirmation import AccountConfirmation
+import string
+import secrets
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.exceptions import AuthenticationFailed
-from profiles.models import BusinessUser, DefaultUser, User
+from profiles.models import BusinessUser, DefaultUser, User, AccountConfirmation
 from ..serializers.serializers_profiles import (
     BusinessUserSerializer,
     CustomTokenObtainPairSerializer,
@@ -12,8 +15,12 @@ from ..serializers.serializers_profiles import (
     FollowRequestSerializer,
     DefaultUserSerializer,
     UserSerializer,
-    BusinessUserSerializerForUpdate
+    BusinessUserSerializerForUpdate,
+    DefaultUserSerializerForRegister,
+    BusinessUserSerializerForRegister
 )
+from django.utils import timezone
+
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
@@ -28,41 +35,95 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
 
+def generate_confirmation_token(length=32):
+    """
+    Generate a random confirmation token of specified length.
+    """
+    characters = string.ascii_letters + string.digits
+    token = ''.join(secrets.choice(characters) for _ in range(length))
+    return token
+
+
+# {
+#     "token" : "hRVEcGwmmkZ9AhnWTslrAqnfq7axRQ4D"
+# }
+class AccountConfirmationVerifyView(APIView):
+    def post(self, request):
+        token = request.data.get('token')
+        # Pronalaženje potvrde naloga na osnovu tokena
+        try:
+            confirmation = AccountConfirmation.objects.get(token=token)
+        except AccountConfirmation.DoesNotExist:
+            return Response({'error': 'Neispravan token potvrde naloga'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Provera da li je potvrda naloga istekla
+        if confirmation.expires_at < timezone.now():
+            return Response({'error': 'Token potvrde naloga je istekao'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Potvrda naloga
+        user = confirmation.user
+        user.is_active = True
+        user.save()
+        # Brisanje potvrde naloga iz baze podataka
+        confirmation.delete()
+
+        return Response({'message': 'Nalog je uspešno potvrđen'}, status=status.HTTP_200_OK)
+
+
 class DefaultUserRegisterView(generics.CreateAPIView):
     """
     View to handle registration of Default Users.
     """
-    serializer_class = DefaultUserSerializer
+    serializer_class = DefaultUserSerializerForRegister
 
-    # def perform_create(self, serializer):
-    #     # Call the default perform_create() method to handle user registration
-    #     user = serializer.save()
+    def perform_create(self, serializer):
+        # Call the default perform_create() method to handle user registration
+        user = serializer.save()
 
-    #     # Generate confirmation token
-    #     token = generate_confirmation_token()
-    #     print(token)
+        # Generate confirmation token
+        token = generate_confirmation_token()
 
-    #     # Create account confirmation
-    #     confirmation = AccountConfirmation.objects.create(
-    #         user=user, token=token)
-    #     print(confirmation)
+        # Create account confirmation
+        confirmation = AccountConfirmation.objects.create(
+            user=user.user, token=token)
 
-    #     # Send confirmation email
-    #     # Replace the following code with your email sending logic
-    #     # email_subject = 'Account Confirmation'
-    #     # Include the token in the email
-    #     # email_message = f'Confirmation token: {token}'
-    #     # send_email(user.email, email_subject, email_message)
+        # Send confirmation email
+        # Replace the following code with your email sending logic
+        # email_subject = 'Account Confirmation'
+        # Include the token in the email
+        # email_message = f'Confirmation token: {token}'
+        # send_email(user.email, email_subject, email_message)
 
-    #     # Return a response indicating successful registration
-    #     return Response({'message': 'User registered successfully. Please check your email for confirmation.'})
+        # Return a response indicating successful registration
+        return Response({'message': 'User registered successfully. Please check your email for confirmation.'})
 
 
 class BusinessUserRegisterView(generics.CreateAPIView):
     """
     View to handle registration of Business Users.
     """
-    serializer_class = BusinessUserSerializer
+    serializer_class = BusinessUserSerializerForRegister
+
+    def perform_create(self, serializer):
+        # Call the default perform_create() method to handle user registration
+        user = serializer.save()
+
+        # Generate confirmation token
+        token = generate_confirmation_token()
+
+        # Create account confirmation
+        confirmation = AccountConfirmation.objects.create(
+            user=user.user, token=token)
+
+        # Send confirmation email
+        # Replace the following code with your email sending logic
+        # email_subject = 'Account Confirmation'
+        # Include the token in the email
+        # email_message = f'Confirmation token: {token}'
+        # send_email(user.email, email_subject, email_message)
+
+        # Return a response indicating successful registration
+        return Response({'message': 'User registered successfully. Please check your email for confirmation.'})
 
 
 class UserLoginView(TokenObtainPairView, JWTAuthentication):
