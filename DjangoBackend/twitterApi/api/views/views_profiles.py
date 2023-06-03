@@ -1,7 +1,5 @@
 
 from profiles.models.account_confirmation import AccountConfirmation
-import string
-import secrets
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -29,19 +27,23 @@ from django.http import JsonResponse
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from profiles.models.follow_request import FollowRequest
+from ..utils import generate_confirmation_token, generate_reset_token, generate_uid
+from django.contrib.auth.tokens import default_token_generator
+
+from django.utils.http import urlsafe_base64_decode
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
 
-def generate_confirmation_token(length=32):
-    """
-    Generate a random confirmation token of specified length.
-    """
-    characters = string.ascii_letters + string.digits
-    token = ''.join(secrets.choice(characters) for _ in range(length))
-    return token
+# def generate_confirmation_token(length=32):
+#     """
+#     Generate a random confirmation token of specified length.
+#     """
+#     characters = string.ascii_letters + string.digits
+#     token = ''.join(secrets.choice(characters) for _ in range(length))
+#     return token
 
 
 # {
@@ -349,3 +351,52 @@ class FollowingListView(generics.ListAPIView):
             return get_object_or_404(User, id=user).follows.all()
         else:
             return self.request.user.follows.all()
+
+
+# View gde korisnik unosi mail i na njegov mail se salje link gde ce resetovti lozinnku
+class ForgotPasswordView(APIView):
+    def post(self, request):
+        email = request.data.get('email')
+
+        try:
+            user = User.objects.get(email=email)
+        except Exception as e:
+            return Response({'error': 'There is no user with this mail'}, status=400)
+
+        token = generate_reset_token(user)
+        uid = generate_uid(user)
+        # Slanje e-pošte sa linkom za resetovanje lozinke
+        reset_password_url = f' http://localhost:8080/reset-password/{uid}/{token}'
+        print(reset_password_url)
+        # send_mail(
+        #     'Resetovanje lozinke',
+        #     f'Molimo posetite sledeći link da biste resetovali lozinku: {reset_password_url}',
+        #     'noreply@example.com',
+        #     [email],
+        #     fail_silently=False,
+        # )
+
+        return Response({'success': 'Email with confirmation message was sent.'})
+
+
+class ResetPasswordConfirmView(APIView):
+    def post(self, request):
+        token = request.data.get('token')
+        uid = request.data.get('uid')
+
+        try:
+            user_id = urlsafe_base64_decode(uid)
+            user = User.objects.get(pk=user_id)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            return Response({'error': 'Neispravan link za resetovanje lozinke.'}, status=400)
+
+        if default_token_generator.check_token(user, token):
+            new_password = request.data.get('new_password')
+
+            # Validacija i ažuriranje nove lozinke
+            user.set_password(new_password)
+            user.save()
+
+            return Response({'success': 'Lozinka je uspešno resetovana.'})
+
+        return Response({'error': 'Neispravan link za resetovanje lozinke.'}, status=400)

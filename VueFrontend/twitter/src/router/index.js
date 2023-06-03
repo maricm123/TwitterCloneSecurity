@@ -6,6 +6,9 @@ import TweetDetail from "../views/dashboard/TweetDetail.vue";
 import AddTweet from "../views/dashboard/AddTweet.vue";
 import MyUserProfile from "../views/dashboard/MyUserProfile.vue";
 import UserProfile from "../views/dashboard/UserProfile.vue";
+import ForgotPassword from "../views/ForgotPassword.vue";
+import ResetPassword from "../views/ResetPassword.vue";
+
 
 import EditUserProfile from "../views/dashboard/EditUserProfile.vue";
 import store from "../store"
@@ -36,6 +39,16 @@ const routes = [
     path: "/dashboard",
     name: "dashboard",
     component: Dashboard,
+  },
+  {
+    path: "/forgot-password",
+    name: "forgot-password",
+    component: ForgotPassword,
+  },
+  {
+    path: "/reset-password/:uid/:token",
+    name: "reset-password",
+    component: ResetPassword,
   },
   {
     path: "/dashboard/my-user-profile",

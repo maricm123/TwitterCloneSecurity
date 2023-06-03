@@ -193,14 +193,20 @@ https://medium.com/django-rest/django-rest-framework-change-password-and-update-
 
 
 27.05:
-- Potvrda naloga nakon registracije - uradio modele, radi se view
-
-- Oporavak lozinke
+- Potvrda naloga nakon registracije - uradio modele, radi se view - DONE
 
 - Promena lozinke
+        API:
+           - view za kad se dobije mail da se posalje na taj mail token za reset lozinke - DONE
+           - view da kad se dodje na stranicu za reset lozinke, ima dva polja koja kuca za reset lozinke - DONE
+        Client:
+           - view za forgot password gde kuca svoj email i na koji mu sse salje token - DONE
+           - view sa dva polja gde kuca lozinku i to se salje na bek i resetuje lozinka - DONE
 
 
 
+
+03.06 i 04.06:
 +++Kontrolisanje pristupa endpoint-ima po RBAC modelu
         - Napraviti permissione za potrebe u projektu (Za biznisa i za ddefault usera)
         - Dodati ih u permission_classes u viewvima

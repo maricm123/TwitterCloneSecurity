@@ -69,4 +69,11 @@ urlpatterns = [
     # Account confirmation
     path('confirmation/',
          views_profiles.AccountConfirmationVerifyView.as_view(), name='confirmation'),
+
+
+    # forgot and reset password
+    path('forgot-password/',
+         views_profiles.ForgotPasswordView.as_view(), name='forgot-password'),
+    path('reset-password/',
+         views_profiles.ResetPasswordConfirmView.as_view(), name='reset-password'),
 ]

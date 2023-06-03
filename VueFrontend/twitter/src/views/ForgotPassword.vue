@@ -2,7 +2,7 @@
   <div class="container">
     <div class="columns">
       <div class="column is-4 is-offset-4">
-        <h1 class="title">Log in</h1>
+        <h1 class="title">Forgot password?</h1>
 
         <form @submit.prevent="submitForm">
           <div class="field">
@@ -11,28 +11,15 @@
               <input type="email" name="email" class="input" v-model="email" />
             </div>
           </div>
-
-          <div class="field">
-            <label>Password</label>
-            <div class="control">
-              <input type="password" name="password" class="input" v-model="password" />
-            </div>
-          </div>
-
           <div class="notification is-danger" v-if="errors.length">
             <p v-for="error in errors" v-bind:key="error">{{ error }}</p>
           </div>
-
           <div class="field">
             <div class="control">
               <button class="button is-success">Submit</button>
             </div>
           </div>
         </form>
-        <br />
-        <div class="control">
-          <button class="button is-dark" @click="forgotPassword()">Forgot Password?</button>
-        </div>
       </div>
     </div>
   </div>
@@ -46,7 +33,6 @@ export default {
   data() {
     return {
       email: "",
-      password: "",
       errors: []
     };
   },
@@ -54,32 +40,34 @@ export default {
     async submitForm() {
       this.$store.commit("setIsLoading", true);
 
-      axios.defaults.headers.common["Authorization"] = "";
-      localStorage.removeItem("token");
+      //   axios.defaults.headers.common["Authorization"] = "";
+      //   localStorage.removeItem("token");
 
       const formData = {
-        email: this.email,
-        password: this.password
+        email: this.email
       };
       await axios
-        .post("/api/user/login/", formData)
+        .post("/api/forgot-password/", formData)
         .then(response => {
-          const token = response.data.token;
-          const refresh = response.data.refresh;
-          const role = response.data.user_type;
+          console.log(response);
+          alert("Check confirmation link in your email.");
+          //   const token = response.data.token;
+          //   const refresh = response.data.refresh;
+          //   const role = response.data.user_type;
 
-          this.$store.commit("setToken", token);
-          this.$store.commit("setRefresh", refresh);
-          this.$store.commit("setRole", role);
+          //   this.$store.commit("setToken", token);
+          //   this.$store.commit("setRefresh", refresh);
+          //   this.$store.commit("setRole", role);
 
-          axios.defaults.headers.common["Authorization"] = "Token " + token;
+          //   axios.defaults.headers.common["Authorization"] = "Token " + token;
 
-          localStorage.setItem("token", token);
-          localStorage.setItem("refresh", refresh);
-          localStorage.setItem("role", role);
-          this.$router.push("/dashboard");
+          //   localStorage.setItem("token", token);
+          //   localStorage.setItem("refresh", refresh);
+          //   localStorage.setItem("role", role);
+          this.$router.push("/login");
         })
         .catch(error => {
+          console.log(error);
           if (error.response) {
             for (const message in error.response.data) {
               this.errors.push(`${message}: ${error.response.data[message]}`);
@@ -90,10 +78,6 @@ export default {
         });
 
       this.$store.commit("setIsLoading", false);
-    },
-    forgotPassword() {
-      console.log("FORGOT PASSWORD");
-      this.$router.push("/forgot-password");
     }
   }
 };
