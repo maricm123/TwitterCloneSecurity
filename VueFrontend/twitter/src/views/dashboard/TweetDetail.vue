@@ -3,8 +3,6 @@
     <div class="columns is-multiline">
       <!-- twit je ritvitovan -->
       <div v-if="tweet.is_retweet">
-        {{currentUser.follows}}
-        {{original_tweet_user}}
         <div
           v-if="currentUser.follows.includes(original_tweet_user.id) || currentUser.id == original_tweet_user.id"
         >

@@ -5,6 +5,7 @@ from profiles.models.business_user import BusinessUser
 from profiles.models.default_user import DefaultUser
 from profiles.models.follow_request import FollowRequest
 from rest_framework.validators import UniqueValidator
+from ..mixins import PasswordSerializerMixin
 
 User = get_user_model()
 
@@ -68,7 +69,7 @@ class DefaultUserSerializer(serializers.ModelSerializer):
         return default_user
 
 
-class DefaultUserSerializerForRegister(serializers.ModelSerializer):
+class DefaultUserSerializerForRegister(serializers.ModelSerializer, PasswordSerializerMixin):
     """
     Serializer for the Default User model. Inherits the base User serializer.
     """
@@ -122,7 +123,7 @@ class BusinessUserSerializer(serializers.ModelSerializer):
         return business_user
 
 
-class BusinessUserSerializerForRegister(serializers.ModelSerializer):
+class BusinessUserSerializerForRegister(serializers.ModelSerializer, PasswordSerializerMixin):
     """
     Serializer for the Business User model. Inherits the base User serializer.
     """
