@@ -42,6 +42,8 @@
               <strong>Content:</strong>
               {{ tweet.text }}
             </text>
+            <img :src="tweet.image" alt="Image" />
+            {{tweet.image}}
           </div>
         </div>
         <div v-if="tweet.user.id !== currentUser.id">
@@ -206,6 +208,7 @@ export default {
       await axios
         .get(`/api/tweet/${tweetID}/`)
         .then(response => {
+          console.log(response);
           this.tweet = response.data;
           this.tweet.user = response.data.user;
           this.liked_by = response.data.liked_by;

@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+import os
 from datetime import timedelta
 from pathlib import Path
 
@@ -192,3 +193,30 @@ EMAIL_PORT = 465
 # EMAIL_USE_SSL = True
 EMAIL_HOST_USER = 'your@djangoapp.com'
 EMAIL_HOST_PASSWORD = 'your password'
+
+
+# settings.py
+
+# ...
+# Specify the URL prefix for media files
+MEDIA_URL = '/tweets/'
+
+# Specify the directory where your media files (including images) are stored
+MEDIA_ROOT = os.path.join(BASE_DIR, 'tweets')
+
+# ...
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+}

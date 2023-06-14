@@ -17,7 +17,7 @@
           <div class="field">
             <label>Image</label>
             <div class="control">
-              <input type="text" class="input" v-model="image" />
+              <input type="file" accept="image/*" @change="handleImageUpload" />
             </div>
           </div>
 
@@ -51,7 +51,7 @@ export default {
         image: null
       };
       await axios
-        .post("/api/tweet/", tweet, {
+        .post("/api/tweet-create/", tweet, {
           headers: { Authorization: `Bearer ${this.$store.state.token}` }
         })
         .then(response => {

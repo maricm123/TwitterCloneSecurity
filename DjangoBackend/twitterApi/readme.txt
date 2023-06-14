@@ -212,7 +212,9 @@ https://medium.com/django-rest/django-rest-framework-change-password-and-update-
         - Dodati ih u permission_classes u viewvima - DONE
 
 
-- videti za lozinku (napraviti neki regex na beku ili frontu), zastiti lozinku itd
+- videti za lozinku (napraviti neki regex na beku ili frontu), zastiti lozinku itd - DONE
 
 
 - pogledati sta treba uraditi za poslednji deo projekta
+
+Zastita podataka:

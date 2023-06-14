@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework.parsers import MultiPartParser, FormParser
-from ..serializers.serializers_tweets import TweetSerializer
+from ..serializers.serializers_tweets import TweetSerializer, TweetSerializerForCreate
 from tweet.models.tweet import Tweet
 from profiles.models.user import User
 from rest_framework.exceptions import PermissionDenied
@@ -26,6 +26,15 @@ class TweetList(generics.ListCreateAPIView):
     queryset = Tweet.objects.order_by('-created_at')
     serializer_class = TweetSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        print(serializer.data)
+        serializer.save(user=self.request.user)
+
+
+class TweetCreate(generics.CreateAPIView):
+    serializer_class = TweetSerializerForCreate
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

@@ -29,6 +29,7 @@ urlpatterns = [
 
     # tweets
     path('tweet/', views_tweets.TweetList.as_view(), name='tweet'),
+    path('tweet-create/', views_tweets.TweetCreate.as_view(), name='tweet-create'),
     path('tweets-dashboard/', views_tweets.TweetListDashboard.as_view(),
          name='tweets-dashboard'),
     path('tweets-by-me/', views_tweets.TweetListByMe.as_view(), name='tweets-by-me'),

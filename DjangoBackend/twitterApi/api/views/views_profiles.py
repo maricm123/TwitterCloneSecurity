@@ -1,4 +1,5 @@
 
+from django.utils.http import urlsafe_base64_decode
 from profiles.models.account_confirmation import AccountConfirmation
 from rest_framework import generics, status
 from rest_framework.views import APIView
@@ -18,6 +19,7 @@ from ..serializers.serializers_profiles import (
     BusinessUserSerializerForRegister
 )
 from django.utils import timezone
+import datetime
 
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -30,8 +32,11 @@ from profiles.models.follow_request import FollowRequest
 from ..utils import generate_confirmation_token, generate_reset_token, generate_uid
 from django.contrib.auth.tokens import default_token_generator
 from ..permissions import BusinessPermission, DefaultPermission
+import logging
+logger = logging.getLogger(__name__)
 
-from django.utils.http import urlsafe_base64_decode
+
+current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -48,6 +53,8 @@ class AccountConfirmationVerifyView(APIView):
         try:
             confirmation = AccountConfirmation.objects.get(token=token)
         except AccountConfirmation.DoesNotExist:
+            logger.error(
+                f"Account does not exist exception throwed at {current_time}")
             return Response({'error': 'Neispravan token potvrde naloga'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Provera da li je potvrda naloga istekla
@@ -121,12 +128,16 @@ class BusinessUserRegisterView(generics.CreateAPIView):
 
 
 class UserLoginView(TokenObtainPairView, JWTAuthentication):
+
     """
     View to handle login of Business Users.
     """
     serializer_class = CustomTokenObtainPairSerializer
 
     def post(self, request, *args, **kwargs):
+        user_agent = request.META.get('HTTP_USER_AGENT')
+        user_ip = request.META.get('REMOTE_ADDR')
+
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -136,10 +147,17 @@ class UserLoginView(TokenObtainPairView, JWTAuthentication):
         if user_type == 'business':
             user = User.objects.get(email=request.data["email"])
             user_serializer = UserSerializer(user)
+            logger.info(
+                f"User logged in {user_serializer.data} with user_type business")
         elif user_type == 'default':
             user = User.objects.get(email=request.data["email"])
             user_serializer = UserSerializer(user)
+            logger.info(
+                f"User logged in {user_serializer.data} with user_type default")
         else:
+            logger.error(
+                f"Invalid user_type. User Agent: {user_agent} at {current_time}")
+            logger.error(f"Invalid user_type. User IP: {user_ip}")
             return Response({"error": "Invalid user_type"}, status=status.HTTP_400_BAD_REQUEST)
 
         token_data = serializer.validated_data.copy()
@@ -173,6 +191,8 @@ class LogoutView(APIView):
 
             return Response(status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
+            logger.error(
+                f"{e} exception throwed at {current_time}")
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -271,6 +291,8 @@ class FollowRequestActionView(APIView):
             action = self.kwargs.get('action')
             follow_request_id = self.kwargs.get('follow_request_id')
         except KeyError as field:
+            logger.error(
+                f"{field} exception throwed at {current_time}")
             return Response(
                 {'error': f'{str(field)} not provided.'},
                 status=status.HTTP_400_BAD_REQUEST,
@@ -353,6 +375,8 @@ class ForgotPasswordView(APIView):
         try:
             user = User.objects.get(email=email)
         except Exception as e:
+            logger.error(
+                f"{e} exception throwed at {current_time}")
             return Response({'error': 'There is no user with this mail'}, status=400)
 
         token = generate_reset_token(user)
