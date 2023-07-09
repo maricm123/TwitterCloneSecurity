@@ -217,4 +217,8 @@ https://medium.com/django-rest/django-rest-framework-change-password-and-update-
 
 - pogledati sta treba uraditi za poslednji deo projekta
 
-Zastita podataka:
+
+
+09.07:
+- PIsanje teorijskog dela projekta i kako sta funkcionise generalno a i u Djangu
+- Cryptography package
