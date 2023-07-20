@@ -65,6 +65,9 @@ REST_FRAMEWORK = {
     # ]
 }
 
+# Key for encrypting (store this in .env file)
+DJANGO_ENCRYPTED_FIELD_KEY = b'12345678901234567890123456789012'
+
 
 #  ----------------- SIMPLE JWT SETTINGS ---------------------------
 SIMPLE_JWT = {

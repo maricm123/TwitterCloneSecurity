@@ -221,4 +221,10 @@ https://medium.com/django-rest/django-rest-framework-change-password-and-update-
 
 09.07:
 - PIsanje teorijskog dela projekta i kako sta funkcionise generalno a i u Djangu
-- Cryptography package
+- Cryptography package (instalacija i konfiguracija)
+Pratiti: https://www.securecoding.com/blog/cryptography-for-security-in-django-app/
+
+20.07:
+- Cryptography package (instalacija i konfiguracija)
+    - uradjeno (proveriti jos i mozda dodati teorije)
+- Setting up Email configuration for sending mail

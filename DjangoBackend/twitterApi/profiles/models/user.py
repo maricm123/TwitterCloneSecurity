@@ -1,8 +1,9 @@
-from django.db import models
-from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
-from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.models import PermissionsMixin, Permission
 from django.contrib.auth import get_user_model
+from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
+from django.contrib.auth.models import PermissionsMixin
+from django.db import models
+from encrypted_field.fields import EncryptedField
+
 from .follow_request import FollowRequest
 
 
@@ -63,6 +64,8 @@ class User(
     )
 
     is_staff = models.BooleanField(default=False, verbose_name=("staff"))
+
+    address = EncryptedField(default="Adresa nije uneta", null=True, blank=True)
 
     user_type = models.CharField(
         max_length=10, choices=USER_TYPE_CHOICES, null=True, blank=True)

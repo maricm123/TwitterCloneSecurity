@@ -34,7 +34,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'password', 'email',
-                  'user_type', 'account_status', 'follows',)
+                  'user_type', 'account_status', 'follows', 'address',)
         read_only_fields = ('id', 'user_type', 'follows',)
 
     def create(self, validated_data):
@@ -53,11 +53,12 @@ class DefaultUserSerializer(serializers.ModelSerializer):
     user_type = serializers.CharField(source='user.user_type')
     account_status = serializers.CharField(source='user.account_status')
     follows = serializers.CharField(source='user.follows')
+    address = serializers.CharField(source='user.address')
 
     class Meta:
         model = DefaultUser
         fields = ('id', 'username', 'password',
-                  'email', 'first_name', 'last_name', 'age', 'address', 'user_type', 'account_status', "follows",)
+                  'email', 'first_name', 'last_name', 'age', 'address', 'user_type', 'account_status', "follows", 'address',)
         read_only_fields = ('id',)
 
     def create(self, validated_data):
@@ -78,11 +79,12 @@ class DefaultUserSerializerForRegister(serializers.ModelSerializer, PasswordSeri
     email = serializers.CharField(source='user.email', validators=[
                                   UniqueValidator(queryset=User.objects.all())])
     user_type = serializers.CharField(source='user.user_type')
+    address = serializers.CharField(source='user.address')
 
     class Meta:
         model = DefaultUser
         fields = ('id', 'username', 'password',
-                  'email', 'first_name', 'last_name', 'age', 'address', 'user_type',)
+                  'email', 'first_name', 'last_name', 'age', 'address', 'user_type', 'address',)
         read_only_fields = ('id',)
 
     def create(self, validated_data):
@@ -106,11 +108,12 @@ class BusinessUserSerializer(serializers.ModelSerializer):
     user_type = serializers.CharField(source='user.user_type')
     account_status = serializers.CharField(source='user.account_status')
     follows = serializers.CharField(source="user.follows")
+    address = serializers.CharField(source='user.address')
 
     class Meta:
         model = BusinessUser
         fields = ('id', 'username', 'password', 'user_type',
-                  'email',  'account_status', 'company_name', 'website', "follows",)
+                  'email',  'account_status', 'company_name', 'website', "follows", 'address',)
         read_only_fields = ('id',)
 
     def create(self, validated_data):
@@ -133,11 +136,12 @@ class BusinessUserSerializerForRegister(serializers.ModelSerializer, PasswordSer
     email = serializers.CharField(source='user.email', validators=[
                                   UniqueValidator(queryset=User.objects.all())])
     user_type = serializers.CharField(source='user.user_type')
+    address = serializers.CharField(source='user.address')
 
     class Meta:
         model = BusinessUser
         fields = ('id', 'username', 'password', 'user_type',
-                  'email', 'company_name', 'website',)
+                  'email', 'company_name', 'website', 'address')
         read_only_fields = ('id',)
 
     def create(self, validated_data):
