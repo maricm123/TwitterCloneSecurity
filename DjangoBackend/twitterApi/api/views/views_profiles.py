@@ -1,12 +1,25 @@
 
+import datetime
+import logging
+
+from django.contrib.auth.tokens import default_token_generator
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from django.utils.http import urlsafe_base64_decode
-from profiles.models.account_confirmation import AccountConfirmation
-from rest_framework import generics, status
-from rest_framework.views import APIView
-from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.exceptions import AuthenticationFailed
 from profiles.models import BusinessUser, DefaultUser, User, AccountConfirmation
+from profiles.models.follow_request import FollowRequest
+from rest_framework import generics
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView
+from django.core.mail import send_mail
+
+
 from ..serializers.serializers_profiles import (
     BusinessUserSerializer,
     CustomTokenObtainPairSerializer,
@@ -18,21 +31,8 @@ from ..serializers.serializers_profiles import (
     DefaultUserSerializerForRegister,
     BusinessUserSerializerForRegister
 )
-from django.utils import timezone
-import datetime
-
-from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.response import Response
-from rest_framework import status
-from django.http import JsonResponse
-from django.core.exceptions import PermissionDenied
-from django.shortcuts import get_object_or_404
-from profiles.models.follow_request import FollowRequest
 from ..utils import generate_confirmation_token, generate_reset_token, generate_uid
-from django.contrib.auth.tokens import default_token_generator
-from ..permissions import BusinessPermission, DefaultPermission
-import logging
+
 logger = logging.getLogger(__name__)
 
 
@@ -90,10 +90,11 @@ class DefaultUserRegisterView(generics.CreateAPIView):
 
         # Send confirmation email
         # Replace the following code with your email sending logic
-        # email_subject = 'Account Confirmation'
+        email_subject = 'Account Confirmation'
+        recipient_list = [user.email]
         # Include the token in the email
-        # email_message = f'Confirmation token: {token}'
-        # send_email(user.email, email_subject, email_message)
+        email_message = f'Confirmation token: {token}'
+        send_mail(email_subject, email_message, recipient_list=[user.email], from_email='mihailomaric001@gmail.com')
 
         # Return a response indicating successful registration
         return Response({'message': 'User registered successfully. Please check your email for confirmation.'})
