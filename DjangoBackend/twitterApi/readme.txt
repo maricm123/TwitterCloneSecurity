@@ -215,6 +215,12 @@ https://medium.com/django-rest/django-rest-framework-change-password-and-update-
 - videti za lozinku (napraviti neki regex na beku ili frontu), zastiti lozinku itd - DONE
 
 
-- pogledati sta treba uraditi za poslednji deo projekta
+09.07:
+- PIsanje teorijskog dela projekta i kako sta funkcionise generalno a i u Djangu
+- Cryptography package (instalacija i konfiguracija)
+Pratiti: https://www.securecoding.com/blog/cryptography-for-security-in-django-app/
 
-Zastita podataka:
+20.07:
+- Cryptography package (instalacija i konfiguracija)
+    - uradjeno (proveriti jos i mozda dodati teorije)
+- Setting up Email configuration for sending mail
