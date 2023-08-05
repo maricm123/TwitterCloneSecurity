@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2a42cbde-932e-450f-a80a-02bab0ec5898" name="Changes" comment="update readme">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/twitterApi/api/views/views_profiles.py" beforeDir="false" afterPath="$PROJECT_DIR$/twitterApi/api/views/views_profiles.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/twitterApi/readme.txt" beforeDir="false" afterPath="$PROJECT_DIR$/twitterApi/readme.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../VueFrontend/twitter/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../VueFrontend/twitter/src/router/index.js" afterDir="false" />
+    <list default="true" id="2a42cbde-932e-450f-a80a-02bab0ec5898" name="Changes" comment="confirmation done">
+      <change beforePath="$PROJECT_DIR$/../VueFrontend/twitter/src/views/businessuser/BusinessSignUp.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../VueFrontend/twitter/src/views/businessuser/BusinessSignUp.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../VueFrontend/twitter/src/views/dashboard/TweetDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../VueFrontend/twitter/src/views/dashboard/TweetDetail.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,7 +16,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$/.." value="main" />
+        <entry key="$PROJECT_DIR$/.." value="email_configuration" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -34,7 +32,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "full.screen.before.presentation.mode": "false",
-    "git-widget-placeholder": "email__configuration",
+    "git-widget-placeholder": "main",
     "last_opened_file_path": "C:/Users/mihai/Desktop/TwitterCloneSecurity/DjangoBackend",
     "settings.editor.selected.configurable": "preferences.customizations"
   }
@@ -64,7 +62,15 @@
       <option name="project" value="LOCAL" />
       <updated>1689930273125</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="confirmation done">
+      <option name="closed" value="true" />
+      <created>1691225667201</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1691225667201</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -80,6 +86,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="update readme" />
-    <option name="LAST_COMMIT_MESSAGE" value="update readme" />
+    <MESSAGE value="confirmation done" />
+    <option name="LAST_COMMIT_MESSAGE" value="confirmation done" />
   </component>
 </project>

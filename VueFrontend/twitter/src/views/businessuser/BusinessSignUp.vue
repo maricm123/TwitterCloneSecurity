@@ -46,6 +46,13 @@
             </div>
           </div>
 
+          <div class="field">
+            <label>Address</label>
+            <div class="control">
+              <input type="text" name="address" class="input" v-model="address" />
+            </div>
+          </div>
+
           <div class="notification is-danger" v-if="errors.length">
             <p v-for="error in errors" v-bind:key="error">{{ error }}</p>
           </div>
@@ -74,6 +81,7 @@ export default {
       password2: "",
       companyName: "",
       website: "",
+      address: "",
       user_type: "business",
       errors: []
     };
@@ -99,7 +107,8 @@ export default {
           user_type: this.user_type,
           password: this.password,
           company_name: this.companyName,
-          website: this.website
+          website: this.website,
+          address: this.address
         };
         await axios
           .post("http://127.0.0.1:8000/api/business-user/register/", formData)

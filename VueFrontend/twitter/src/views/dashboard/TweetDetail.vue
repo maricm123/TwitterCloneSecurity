@@ -208,7 +208,6 @@ export default {
       await axios
         .get(`/api/tweet/${tweetID}/`)
         .then(response => {
-          console.log(response);
           this.tweet = response.data;
           this.tweet.user = response.data.user;
           this.liked_by = response.data.liked_by;
