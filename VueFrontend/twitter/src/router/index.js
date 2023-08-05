@@ -8,6 +8,7 @@ import MyUserProfile from "../views/dashboard/MyUserProfile.vue";
 import UserProfile from "../views/dashboard/UserProfile.vue";
 import ForgotPassword from "../views/ForgotPassword.vue";
 import ResetPassword from "../views/ResetPassword.vue";
+import ConfirmAccount from "../views/ConfirmAccount.vue";
 
 
 import EditUserProfile from "../views/dashboard/EditUserProfile.vue";
@@ -86,6 +87,11 @@ const routes = [
     meta: {
       requireLogin: true
     }
+  },
+  {
+    path: '/confirmation/:token',
+    name: 'ConfirmAccount',
+    component: ConfirmAccount,
   },
 ];
 

@@ -3,12 +3,12 @@ import datetime
 import logging
 
 from django.contrib.auth.tokens import default_token_generator
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ValidationError
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.http import urlsafe_base64_decode
-from profiles.models import BusinessUser, DefaultUser, User, AccountConfirmation
-from profiles.models.follow_request import FollowRequest
+from profiles.models import BusinessUser, DefaultUser, User, AccountConfirmation, FollowRequest
 from rest_framework import generics
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
@@ -29,7 +29,7 @@ from ..serializers.serializers_profiles import (
     UserSerializer,
     BusinessUserSerializerForUpdate,
     DefaultUserSerializerForRegister,
-    BusinessUserSerializerForRegister
+    BusinessUserSerializerForRegister, DefaultUserSerializerForUpdate
 )
 from ..utils import generate_confirmation_token, generate_reset_token, generate_uid
 
@@ -49,6 +49,8 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 class AccountConfirmationVerifyView(APIView):
     def post(self, request):
         token = request.data.get('token')
+
+        print(token)
         # Pronalaženje potvrde naloga na osnovu tokena
         try:
             confirmation = AccountConfirmation.objects.get(token=token)
@@ -68,7 +70,8 @@ class AccountConfirmationVerifyView(APIView):
         # Brisanje potvrde naloga iz baze podataka
         confirmation.delete()
 
-        return Response({'message': 'Nalog je uspešno potvrđen'}, status=status.HTTP_200_OK)
+        # return Response({'message': 'Nalog je uspešno potvrđen'}, status=status.HTTP_200_OK)
+        return JsonResponse({'success':True})
 
 
 class DefaultUserRegisterView(generics.CreateAPIView):
@@ -93,7 +96,13 @@ class DefaultUserRegisterView(generics.CreateAPIView):
         email_subject = 'Account Confirmation'
         recipient_list = [user.email]
         # Include the token in the email
-        email_message = f'Confirmation token: {token}'
+        confirmation_url = 'http://localhost:8080/confirmation/'
+
+        # Appending the confirmation token to the URL
+        confirmation_link = f'{confirmation_url}{token}/'
+
+        # Email message
+        email_message = f'Confirmation link: {confirmation_link}'
         send_mail(email_subject, email_message, recipient_list=[user.email], from_email='mihailomaric001@gmail.com')
 
         # Return a response indicating successful registration
@@ -119,10 +128,17 @@ class BusinessUserRegisterView(generics.CreateAPIView):
 
         # Send confirmation email
         # Replace the following code with your email sending logic
-        # email_subject = 'Account Confirmation'
+        email_subject = 'Account Confirmation'
+        recipient_list = [user.email]
         # Include the token in the email
-        # email_message = f'Confirmation token: {token}'
-        # send_email(user.email, email_subject, email_message)
+        confirmation_url = 'http://localhost:8080/confirmation/'
+
+        # Appending the confirmation token to the URL
+        confirmation_link = f'{confirmation_url}{token}/'
+
+        # Email message
+        email_message = f'Confirmation link: {confirmation_link}'
+        send_mail(email_subject, email_message, recipient_list=[user.email], from_email='mihailomaric001@gmail.com')
 
         # Return a response indicating successful registration
         return Response({'message': 'User registered successfully. Please check your email for confirmation.'})

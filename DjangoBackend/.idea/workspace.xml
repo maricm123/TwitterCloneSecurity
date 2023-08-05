@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2a42cbde-932e-450f-a80a-02bab0ec5898" name="Changes" comment="update readme" />
+    <list default="true" id="2a42cbde-932e-450f-a80a-02bab0ec5898" name="Changes" comment="update readme">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/twitterApi/api/views/views_profiles.py" beforeDir="false" afterPath="$PROJECT_DIR$/twitterApi/api/views/views_profiles.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/twitterApi/readme.txt" beforeDir="false" afterPath="$PROJECT_DIR$/twitterApi/readme.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../VueFrontend/twitter/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../VueFrontend/twitter/src/router/index.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -28,8 +33,10 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "full.screen.before.presentation.mode": "false",
     "git-widget-placeholder": "email__configuration",
-    "settings.editor.selected.configurable": "reference.settingsdialog.IDE.editor.colors"
+    "last_opened_file_path": "C:/Users/mihai/Desktop/TwitterCloneSecurity/DjangoBackend",
+    "settings.editor.selected.configurable": "preferences.customizations"
   }
 }]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -42,8 +49,34 @@
       <option name="project" value="LOCAL" />
       <updated>1689860809635</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2a42cbde-932e-450f-a80a-02bab0ec5898" name="Changes" comment="update readme" />
+      <created>1689930067260</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1689930067260</updated>
+    </task>
+    <task id="LOCAL-00002" summary="update readme">
+      <option name="closed" value="true" />
+      <created>1689930273125</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1689930273125</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="update readme" />
