@@ -1,12 +1,25 @@
 
+import datetime
+import logging
+
+from django.contrib.auth.tokens import default_token_generator
+from django.core.exceptions import PermissionDenied, ValidationError
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from django.utils.http import urlsafe_base64_decode
-from profiles.models.account_confirmation import AccountConfirmation
-from rest_framework import generics, status
+from profiles.models import BusinessUser, DefaultUser, User, AccountConfirmation, FollowRequest
+from rest_framework import generics
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.exceptions import AuthenticationFailed
-from profiles.models import BusinessUser, DefaultUser, User, AccountConfirmation
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView
+from django.core.mail import send_mail
+
+
 from ..serializers.serializers_profiles import (
     BusinessUserSerializer,
     CustomTokenObtainPairSerializer,
@@ -16,23 +29,10 @@ from ..serializers.serializers_profiles import (
     UserSerializer,
     BusinessUserSerializerForUpdate,
     DefaultUserSerializerForRegister,
-    BusinessUserSerializerForRegister
+    BusinessUserSerializerForRegister, DefaultUserSerializerForUpdate
 )
-from django.utils import timezone
-import datetime
-
-from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.response import Response
-from rest_framework import status
-from django.http import JsonResponse
-from django.core.exceptions import PermissionDenied
-from django.shortcuts import get_object_or_404
-from profiles.models.follow_request import FollowRequest
 from ..utils import generate_confirmation_token, generate_reset_token, generate_uid
-from django.contrib.auth.tokens import default_token_generator
-from ..permissions import BusinessPermission, DefaultPermission
-import logging
+
 logger = logging.getLogger(__name__)
 
 
@@ -49,6 +49,8 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 class AccountConfirmationVerifyView(APIView):
     def post(self, request):
         token = request.data.get('token')
+
+        print(token)
         # Pronalaženje potvrde naloga na osnovu tokena
         try:
             confirmation = AccountConfirmation.objects.get(token=token)
@@ -68,7 +70,8 @@ class AccountConfirmationVerifyView(APIView):
         # Brisanje potvrde naloga iz baze podataka
         confirmation.delete()
 
-        return Response({'message': 'Nalog je uspešno potvrđen'}, status=status.HTTP_200_OK)
+        # return Response({'message': 'Nalog je uspešno potvrđen'}, status=status.HTTP_200_OK)
+        return JsonResponse({'success':True})
 
 
 class DefaultUserRegisterView(generics.CreateAPIView):
@@ -90,10 +93,17 @@ class DefaultUserRegisterView(generics.CreateAPIView):
 
         # Send confirmation email
         # Replace the following code with your email sending logic
-        # email_subject = 'Account Confirmation'
+        email_subject = 'Account Confirmation'
+        recipient_list = [user.email]
         # Include the token in the email
-        # email_message = f'Confirmation token: {token}'
-        # send_email(user.email, email_subject, email_message)
+        confirmation_url = 'http://localhost:8080/confirmation/'
+
+        # Appending the confirmation token to the URL
+        confirmation_link = f'{confirmation_url}{token}/'
+
+        # Email message
+        email_message = f'Confirmation link: {confirmation_link}'
+        send_mail(email_subject, email_message, recipient_list=[user.email], from_email='mihailomaric001@gmail.com')
 
         # Return a response indicating successful registration
         return Response({'message': 'User registered successfully. Please check your email for confirmation.'})
@@ -118,10 +128,17 @@ class BusinessUserRegisterView(generics.CreateAPIView):
 
         # Send confirmation email
         # Replace the following code with your email sending logic
-        # email_subject = 'Account Confirmation'
+        email_subject = 'Account Confirmation'
+        recipient_list = [user.email]
         # Include the token in the email
-        # email_message = f'Confirmation token: {token}'
-        # send_email(user.email, email_subject, email_message)
+        confirmation_url = 'http://localhost:8080/confirmation/'
+
+        # Appending the confirmation token to the URL
+        confirmation_link = f'{confirmation_url}{token}/'
+
+        # Email message
+        email_message = f'Confirmation link: {confirmation_link}'
+        send_mail(email_subject, email_message, recipient_list=[user.email], from_email='mihailomaric001@gmail.com')
 
         # Return a response indicating successful registration
         return Response({'message': 'User registered successfully. Please check your email for confirmation.'})

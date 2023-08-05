@@ -223,4 +223,10 @@ Pratiti: https://www.securecoding.com/blog/cryptography-for-security-in-django-a
 20.07:
 - Cryptography package (instalacija i konfiguracija)
     - uradjeno (proveriti jos i mozda dodati teorije)
-- Setting up Email configuration for sending mail
+- Setting up Email configuration for sending mail - DONE
+
+- Account Confirmation - steps :
+    - Dodati stranicu na frontu za confirmation
+    - Videti da li iz maila ide redirekt na tu stranicu i odma povtvrdjuje
+        ili prvo upise token u formu - DONE
+
