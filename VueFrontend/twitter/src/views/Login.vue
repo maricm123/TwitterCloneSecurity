@@ -92,7 +92,6 @@ export default {
       this.$store.commit("setIsLoading", false);
     },
     forgotPassword() {
-      console.log("FORGOT PASSWORD");
       this.$router.push("/forgot-password");
     }
   }
