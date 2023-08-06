@@ -409,26 +409,45 @@ class ForgotPasswordView(APIView):
         #     fail_silently=False,
         # )
 
+        # Send confirmation email
+        # Replace the following code with your email sending logic
+        email_subject = 'Reset password link'
+        recipient_list = [user.email]
+        # Include the token in the email
+        # confirmation_url = 'http://localhost:8080/confirmation/'
+        # Appending the confirmation token to the URL
+        # confirmation_link = f'{confirmation_url}{token}/'
+
+        # Email message
+        email_message = f'Reset password link: {reset_password_url}'
+        send_mail(email_subject, email_message, recipient_list=[user.email], from_email='mihailomaric001@gmail.com')
+
         return Response({'success': 'Email with confirmation message was sent.'})
 
 
 class ResetPasswordConfirmView(APIView):
     def post(self, request):
+        print(request.data, "REQUEST DATA")
         token = request.data.get('token')
         uid = request.data.get('uid')
-
+        print(token, uid)
         try:
             user_id = urlsafe_base64_decode(uid)
             user = User.objects.get(pk=user_id)
+            print(user)
         except (TypeError, ValueError, OverflowError, User.DoesNotExist):
             return Response({'error': 'Neispravan link za resetovanje lozinke.'}, status=400)
-
+        print(user, token)
         if default_token_generator.check_token(user, token):
             new_password = request.data.get('new_password')
-
+            print(new_password, "NEW PASSWORD")
             # Validacija i ažuriranje nove lozinke
             user.set_password(new_password)
+            print('set passwore')
             user.save()
+            print('user save')
+        else:
+            print("ELSE")
 
             return Response({'success': 'Lozinka je uspešno resetovana.'})
 

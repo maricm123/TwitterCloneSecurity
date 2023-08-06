@@ -40,7 +40,7 @@ export default {
   async created() {
     // Get the uid and token from the URL parameters
     // this.uid = this.$route.params.uid;
-    this.uid = this.$route.params.uid;
+    this.uid = await this.$route.params.uid;
     this.token = await this.$route.params.token;
     console.log(this.token);
   },

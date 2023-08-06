@@ -230,3 +230,11 @@ Pratiti: https://www.securecoding.com/blog/cryptography-for-security-in-django-a
     - Videti da li iz maila ide redirekt na tu stranicu i odma povtvrdjuje
         ili prvo upise token u formu - DONE
 
+05.08
+- Reset password and forgot password
+        broken pipe nakon prvog pokusaja menjanja lozinke, drugi put ulazi u else
+
+06.08
+- Videti reset password view (broken pipe from - mozda je do interneta ili baze)
+
+- pisati teoriju i procitati teoriju na slajdovima na canvasu
